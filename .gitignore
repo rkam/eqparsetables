@@ -1,1 +1,8 @@
 .idea/*
+__pycache__/*
+
+# Config and input / output files
+blacklist.txt
+config.txt
+parse.txt
+out
