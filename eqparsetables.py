@@ -3,10 +3,9 @@
 
 import sys
 import getopt
-import sqlite3
 import os
 import gpcastreader as gpc
-# import enjinprinter as ep
+import enjincastprinter as ecp
 
 __author__ = 'Andrew Quinn'
 __copyright__ = 'Copyright 2015-2016, Andrew Quinn'
@@ -40,22 +39,10 @@ def main(argv):
             blacklist_path = arg
 
     reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
-    spells_cast_by_class = reader.get_spells_cast_by_class()
+    printer = ecp.EnjinCastPrinter(reader.get_spells_cast_by_class(), reader.classes,
+                                   reader.caster_dod, reader.config)
 
-    # setup db connection
-    conn = sqlite3.connect(':memory:')
-    cur = conn.cursor()
-
-    # populate db
-    # ep.create_class_tables(cur, spells_cast_by_class, reader.classes)
-    # ep.populate_class_tables(cur, caster_dod, cfg)
-
-    # print it out
-    # ep.print_tables_enjin(cur, spells_cast_by_class, reader.classes)
-
-    # clean up db connection
-    cur.close()
-    conn.close()
+    printer.print_tables_enjin()
 
 
 if __name__ == '__main__':
