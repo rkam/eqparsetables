@@ -12,7 +12,7 @@ class GPCastReader:
         self.gp_lines = self.read_raw_parse(input_path)
         self.config = self.init_config(config_path)
         self.blacklist = self.init_blacklist(blacklist_path)
-        self.caster_dod = self.init_caster_dod(self.classes)
+        self.caster_dod = self.init_caster_dod()
 
     @staticmethod
     def read_raw_parse(input_path):
@@ -60,7 +60,7 @@ class GPCastReader:
         """
         return any(spell_name.startswith(b) for b in self.blacklist)
 
-    def get_classes(self):
+    def get_eq_classes(self):
         """
         Create a set of unique classes from a config dictionary of dictionaries.
 
