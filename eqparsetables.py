@@ -42,7 +42,7 @@ def main(argv):
     printer = ecp.EnjinCastPrinter(reader.get_spells_cast_by_class(), reader.classes,
                                    reader.caster_dod, reader.config)
 
-    printer.print_tables_enjin()
+    printer.print_all_tables()
 
 
 if __name__ == '__main__':

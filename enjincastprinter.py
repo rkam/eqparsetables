@@ -39,38 +39,47 @@ class EnjinCastPrinter:
         self.cur.close()
         self.conn.close()
 
-    def print_tables_enjin(self):
-        """Print class tables in enjin forum table format.
+    def print_all_tables(self):
+        """Print all parsed class tables in enjin forum table format.
 
         :rtype: none
         """
         for loop_count, eq_class in enumerate(sorted(self.classes_parsed)):
             padding = '\n\n' if loop_count else ''
-            class_name = eq_class_abbr.get(eq_class, 'unknown')
-            table_spells = sorted(self.spells_cast_by_class[eq_class])
-            spell_query = '"{0}"'.format('","'.join(table_spells))
-            player_total = '("{0}") AS Total'.format('" + "'.join(table_spells))
-            self.cur.execute('SELECT player, %s, %s FROM %s;' % (player_total, spell_query, class_name))
-            rows = self.cur.fetchall()
+            print(padding)
+            self.print_class_table(eq_class)
 
-            print('{0}[size=5][b]{1}[/b][/size]'.format(padding, class_name))
+    def print_class_table(self, eq_class):
+        """Print the parse table of a single class
 
-            db_data = []
-            for i, row in enumerate(rows):
-                db_data.append([d for d in row])
+        :param eq_class: The EQ abbreviation of the class to be printed
+        :return: none
+        """
+        class_name = eq_class_abbr.get(eq_class, 'unknown')
+        table_spells = sorted(self.spells_cast_by_class[eq_class])
+        spell_query = '"{0}"'.format('","'.join(table_spells))
+        player_total = '("{0}") AS Total'.format('" + "'.join(table_spells))
+        self.cur.execute('SELECT player, %s, %s FROM %s;' % (player_total, spell_query, class_name))
+        rows = self.cur.fetchall()
 
-            column_names = [str(d[0]) for d in self.cur.description]
-            column_names[0] = ''
-            all_data = collections.deque(sorted(db_data, key=operator.itemgetter(0)))
-            all_data.appendleft(column_names)
+        print('[size=5][b]{0}[/b][/size]'.format(class_name))
 
-            print('[table]')
-            for j, column in enumerate(all_data[0]):
-                if j is 0 or j is 1:
-                    print('[tr][td][b]{0}[/b][/td][/tr]'.format('[/b][/td][td][b]'.join(str(row[j]) for row in all_data)))
-                else:
-                    print('[tr][td]{0}[/td][/tr]'.format('[/td][td]'.join(str(row[j]) for row in all_data)))
-            print('[/table]')
+        db_data = []
+        for i, row in enumerate(rows):
+            db_data.append([d for d in row])
+
+        column_names = [str(d[0]) for d in self.cur.description]
+        column_names[0] = ''
+        all_data = collections.deque(sorted(db_data, key=operator.itemgetter(0)))
+        all_data.appendleft(column_names)
+
+        print('[table]')
+        for j, column in enumerate(all_data[0]):
+            if j is 0 or j is 1:
+                print('[tr][td][b]{0}[/b][/td][/tr]'.format('[/b][/td][td][b]'.join(str(row[j]) for row in all_data)))
+            else:
+                print('[tr][td]{0}[/td][/tr]'.format('[/td][td]'.join(str(row[j]) for row in all_data)))
+        print('[/table]')
 
     def populate_class_tables(self):
         """Populate class tables with cast count data.
