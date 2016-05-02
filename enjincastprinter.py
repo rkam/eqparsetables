@@ -1,25 +1,7 @@
 import operator
 import collections
 import sqlite3
-
-eq_class_abbr = {
-    'BER': 'Berserkers',
-    'BRD': 'Bards',
-    'BST': 'Beastlords',
-    'CLR': 'Clerics',
-    'DRU': 'Druids',
-    'ENC': 'Enchanters',
-    'MAG': 'Magicians',
-    'MNK': 'Monks',
-    'NEC': 'Necromancers',
-    'PAL': 'Paladins',
-    'RNG': 'Rangers',
-    'ROG': 'Rogues',
-    'SHD': 'Shadowknights',
-    'SHM': 'Shamans',
-    'WAR': 'Warriors',
-    'WIZ': 'Wizards'
-}
+import everquestinfo as eq
 
 
 class EnjinCastPrinter:
@@ -55,7 +37,7 @@ class EnjinCastPrinter:
         :param eq_class: The EQ abbreviation of the class to be printed
         :return: none
         """
-        class_name = eq_class_abbr.get(eq_class, 'unknown')
+        class_name = eq.eq_classes.get(eq_class, 'unknown')
         table_spells = sorted(self.spells_cast_by_class[eq_class])
         spell_query = '"{0}"'.format('","'.join(table_spells))
         player_total = '("{0}") AS Total'.format('" + "'.join(table_spells))
@@ -87,7 +69,7 @@ class EnjinCastPrinter:
         :return: void
         """
         for caster, cast in self.caster_dod.items():
-            class_name = eq_class_abbr.get(self.config[caster]['class'], 'unknown')
+            class_name = eq.eq_classes.get(self.config[caster]['class'], 'unknown')
             spells_cast = sorted(list(self.caster_dod[caster].keys()))
             cast_counts = [cast[spell] for spell in spells_cast]
             self.cur.execute("INSERT INTO %s (player, %s) VALUES (%s, %s);" % (
@@ -100,7 +82,7 @@ class EnjinCastPrinter:
         :return: void
         """
         for eq_class in self.classes_parsed:
-            class_name = eq_class_abbr.get(eq_class, 'unknown')
+            class_name = eq.eq_classes.get(eq_class, 'unknown')
             class_spells = ', '.join('"{0}" INTEGER(5) DEFAULT 0'.format(spell)
                                      for spell in sorted(self.spells_cast_by_class[eq_class]))
             self.cur.execute("CREATE TABLE %s (player TEXT NOT NULL, %s);" % (class_name, class_spells))
