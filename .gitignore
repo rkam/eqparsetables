@@ -2,7 +2,7 @@
 __pycache__/*
 
 # Config and input / output files
-blacklist.txt
-config.txt
-parse.txt
+blacklist.*
+config.*
+parse.*
 out
