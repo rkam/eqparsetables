@@ -36,7 +36,8 @@ class GPCastReader:
         :return: A dictionary of dictionaries with format cfg[name] = dictionary{'class', 'alias'}
         """
         with open(path, 'r') as cfg_handle:
-            cfg_reader = csv.DictReader(filter(lambda row: row[0] != '#', cfg_handle), ['name', 'class', 'alias'])
+            cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),
+                                        ['name', 'class', 'alias'])
             return {row['name'].strip(): {'class': row['class'].strip(),
                                           'alias': row['alias'].strip()} for row in cfg_reader}
 
