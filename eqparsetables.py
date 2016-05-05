@@ -20,8 +20,8 @@ __status__ = 'Prototype'
 def main(argv):
     cwd = os.getcwd()
     config_path = cwd + '/config.ini'
-    input_path = cwd + '/parse.txt'
     blacklist_path = cwd + '/blacklist.ini'
+    input_path = cwd + '/parse.txt'
 
     # parse arguments
     try:
