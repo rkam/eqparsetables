@@ -2,8 +2,10 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-PARSE_DIR="_dps_parses"
-OUT_DIR="_dps_results"
+PARSE_DIR="_eq_ra/dps_parses"
+OUT_DIR="_eq_ra/dps_results"
+
+[[ -d $OUT_DIR ]] || mkdir -p $OUT_DIR
 
 for i in "$PARSE_DIR"/160*
 do
