@@ -20,7 +20,7 @@ trap 'rm -f $OUT_FILE $MISSING_CHARS_FILE; exit' 1 2 3 15
 
 [[ ! -s $MISSING_CHARS_FILE ]] && echo "No one is missing." && exit 0
 
-ROSTER_FILE=$(./get_players.sh)
+ROSTER_FILE=$(./bin/get_chars.sh)
 
 fgrep -f "$MISSING_CHARS_FILE" "$ROSTER_FILE" > "$OUT_FILE"
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+PARSE_DIR="_dps_parses"
+OUT_DIR="_dps_results"
+
+for i in "$PARSE_DIR"/160*
+do
+  python3 eqparsedpstables.py "$i" > "$OUT_DIR/${i#$PARSE_DIR/}"
+done
