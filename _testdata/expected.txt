@@ -1,12 +1,4 @@
 Players missing from config file:
-	Saxxol
-	Tanols
-	Xames
-	Middis
-	Nanobum
-	Nexfor
-	Ultara
-	Claireannette
 
 
 Grummus on 5/1/2016 in 87sec
@@ -15,11 +7,13 @@ Grummus on 5/1/2016 in 87sec
           Total    588397540    6763190    6763190   87  100
 
   Chalupabatman     45930481     527937     588852   78 7.81
+         Saxxol     43117642     495605     574902   75 7.33
        Renotaki     31668261     364003     395853   80 5.38
          Niekko     30947691     355721     368425   84 5.26
         Naugrin     30807175     354105     422016   73 5.24
         Taiqwon     28582329     328533     386248   74 4.86
        Kraythos     26162708     300721     315213   83 4.45
+         Tanols     25783773     296365     310648   83 4.38
      Espaniardz     25212982     289804     315162   80 4.28
        Aquarion     23905651     274778     310463   77 4.06
          Cazzin     21780042     250345     290401   75  3.7
@@ -33,6 +27,7 @@ Grummus on 5/1/2016 in 87sec
  Funnycreatures     13411983     154161     159666   84 2.28
     Valadrielle     13366106     153633     178215   75 2.27
        Gildnaox     12839584     147581     156580   82 2.18
+          Xames     10689020     122862     138818   77 1.82
            Dark     10371314     119211     131282   79 1.76
      Microphone      9331204     107255     119631   78 1.59
         Mezzter      8369140      96197     123076   68 1.42
@@ -40,15 +35,20 @@ Grummus on 5/1/2016 in 87sec
           Siraj      7422077      85311     100298   74 1.26
         Cilenne      6027422      69281      70911   85 1.02
        Kelliene      5379727      61836      67247   80 0.91
+         Middis      3419301      39302      47490   72 0.58
      Petahpipah      2855637      32823      36611   78 0.49
    Blackdiamond      2685185      30864      34425   78 0.46
       Wahldodar      2265176      26037      29418   77 0.38
        Temppest      2074889      23849      26947   77 0.35
          Phalyn      2068879      23780      30879   67 0.35
           Audri      1361435      15649      26181   52 0.23
+        Nanobum      1246319      14326      14837   84 0.21
       Deepwater      1103174      12680      18698   59 0.19
       Jazrakhan      1032685      11870      13411   77 0.18
+         Nexfor       717025       8242      17488   41 0.12
        Runzwith       398186       4577       4916   81 0.07
       Mysterrie       385872       4435      10719   36 0.07
     Slackwaters       162269       1865       8540   19 0.03
+         Ultara        74300        854        929   80 0.01
          Angeyy        66761        767      66761    1 0.01
+  Claireannette        16049        184        698   23    0
