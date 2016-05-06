@@ -15,9 +15,9 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-TEST_INPUT=_testdata/160501_Grummus.txt
-TEST_OUTPUT=_testdata/_test_$$.out
-VERIFY_FILE=_testdata/expected.txt
+TEST_INPUT=_eq_ra/testdata/160501_Grummus.txt
+TEST_OUTPUT=_eq_ra/testdata/_test_$$.out
+VERIFY_FILE=_eq_ra/testdata/expected.txt
 
 trap 'rm $TEST_OUTPUT; exit' 1 2 3 15
 

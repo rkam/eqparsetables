@@ -6,8 +6,8 @@
 
 DPS_PARSES_DIR="_dps_parses"
 
-EXISTING_CHARS="_data/config.ini"
-BLACKLIST_FILE="_data/mobs_blacklist.ini"
+EXISTING_CHARS="_eq_ra/data/config.ini"
+BLACKLIST_FILE="_eq_ra/data/mobs_blacklist.ini"
 
 MISSING_CHARS_FILE="$$.missing"
 OUT_FILE="$$.added"

@@ -2,7 +2,7 @@
 
 # Extract all players and their class from RaidRoster dumps
 
-ROSTERS_DIR="./_roster"
+ROSTERS_DIR="./_eq_ra/roster"
 
 OUTFILE="all_players_$(date +'%y%m%d')"
 

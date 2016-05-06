@@ -19,8 +19,8 @@ __status__     = 'Prototype'
 
 def main(argv):
     cwd = os.getcwd()
-    config_path    = cwd + '/_data/config.ini'
-    blacklist_path = cwd + '/_data/mobs_blacklist.ini'
+    config_path    = cwd + '/_eq_ra/data/config.ini'
+    blacklist_path = cwd + '/_eq_ra/data/mobs_blacklist.ini'
 
     # parse arguments
     try:
