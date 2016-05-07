@@ -41,7 +41,7 @@ def main(argv):
 
     reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
     pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
-    ecp.print_class_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+    ecp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
 
 
 if __name__ == '__main__':

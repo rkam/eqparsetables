@@ -1,7 +1,7 @@
 import parsedb
 
 
-def print_class_table(table: parsedb.CastTable):
+def print_cast_table(table: parsedb.CastTable):
     print('[size=5][b]{0}[/b][/size]'.format(table.class_name))
     print('[table]')
     print('[tr][td][/td][td][b]{0}[/b][/td][/tr]'.format('[/b][/td][td][b]'.join(str(cell) for cell in table.get_players())))
@@ -12,7 +12,7 @@ def print_class_table(table: parsedb.CastTable):
     print('[/table]')
 
 
-def print_class_tables(tables: [parsedb.CastTable]):
+def print_cast_tables(tables: [parsedb.CastTable]):
     """
     Print all parsed class tables in enjin forum table format.
 
@@ -22,4 +22,4 @@ def print_class_tables(tables: [parsedb.CastTable]):
     for loop_count, table in enumerate(tables):
         padding = '\n\n' if loop_count else ''
         print(padding)
-        print_class_table(table)
+        print_cast_table(table)
