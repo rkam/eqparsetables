@@ -2,18 +2,22 @@ import sqlite3
 import everquestinfo as eq
 
 
-class ParseTable:
+class CastTable:
     def __init__(self, eq_class, cast_data, spell_data):
+        """
+        Constructs a CastTable object
+
+        :param eq_class: the EQ class of the players to appear in the CastTable (e.g. 'CLR')
+        :param cast_data: a list of lists of the form [[player_name, spell_1, spell_2, ..., spell_n]_1, ...]
+        :param spell_data: a list of spell names corresponding to the spells in cast_data
+        :return: a CastTable object
+        """
         self.class_name = eq.eq_classes.get(eq_class, 'unknown')
         self.casts = sorted(cast_data)
         self.spells = spell_data
-        pass
 
-    def __iter__(self):
-        pass
-
-    def __next__(self):
-        pass
+    def get_rows(self):
+        return zip(*[x[1:] for x in self.casts])
 
     def get_players(self):
         return [x[0] for x in self.casts]
@@ -61,14 +65,14 @@ class ParseDB:
                 class_name, ", ".join('"{0}"'.format(spell) for spell in spells_cast), '"{0}"'.format(caster),
                 ", ".join(cast_counts)))
 
-    def get_class_table(self, eq_class):
+    def get_cast_table(self, eq_class):
         """
-        Create the parse table of a single class.
+        Create the cast parse table of a single class.
 
         :param eq_class: The EQ abbreviation of the desired class
         :return: a ParseTable containing the casting information recorded for all members of a given class
         """
-        return ParseTable(eq_class, self.get_all(eq_class), self.get_spells(eq_class))
+        return CastTable(eq_class, self.get_all(eq_class), self.get_spells(eq_class))
 
     def get_players(self, eq_class):
         class_name = eq.eq_classes.get(eq_class, 'unknown')

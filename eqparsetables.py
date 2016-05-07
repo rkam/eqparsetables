@@ -6,6 +6,7 @@ import getopt
 import os
 import gpcastreader as gpc
 import enjincastprinter as ecp
+import parsedb
 
 __author__ = 'Andrew Quinn'
 __copyright__ = 'Copyright 2015-2016, Andrew Quinn'
@@ -39,10 +40,8 @@ def main(argv):
             blacklist_path = arg
 
     reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
-    printer = ecp.EnjinCastPrinter(reader.get_spells_cast_by_class(), reader.classes,
-                                   reader.caster_dod, reader.config)
-
-    printer.print_all_tables()
+    pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
+    ecp.print_class_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
 
 
 if __name__ == '__main__':

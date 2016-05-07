@@ -9,48 +9,50 @@ class GPCastReader:
     """
     def __init__(self, input_path, config_path, blacklist_path):
         self.classes = set()
-        self.gp_lines = self.read_raw_parse(input_path)
-        self.config = self.init_config(config_path)
-        self.blacklist = self.init_blacklist(blacklist_path)
+        self.gp_lines = []
+        self.config = {}
+        self.blacklist = []
+
+        self.read_raw_parse(input_path)
+        self.init_config(config_path)
+        self.init_blacklist(blacklist_path)
+
         self.caster_dod = self.init_caster_dod()
 
-    @staticmethod
-    def read_raw_parse(input_path):
+    def read_raw_parse(self, path):
         """
         Read GamParse's forum output into a list.
 
-        :param input_path: the location of the file storing GamParse's output
+        :param path: path to the file containing GamParse output
         :return: a list containing the rows of GamParse's forum output
         """
-        with open(input_path, 'r') as input_handle:
-            return input_handle.read().splitlines()
+        with open(path, 'r') as input_handle:
+            self.gp_lines = input_handle.read().splitlines()
 
-    @staticmethod
-    def init_config(path):
+    def init_config(self, path):
         """
         Read config.txt into a dictionary of dictionaries.
 
-        The file config.txt should be in CSV format with the values name, class, alias.
+        The config file should be in CSV format with the values name, class, alias.
 
-        :param path: the relative path to the config file
+        :param path: path to the config CSV file
         :return: A dictionary of dictionaries with format cfg[name] = dictionary{'class', 'alias'}
         """
         with open(path, 'r') as cfg_handle:
             cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),
                                         ['name', 'class', 'alias'])
-            return {row['name'].strip(): {'class': row['class'].strip(),
-                                          'alias': row['alias'].strip()} for row in cfg_reader}
+            self.config = {row['name'].strip(): {'class': row['class'].strip(),
+                                                 'alias': row['alias'].strip()} for row in cfg_reader}
 
-    @staticmethod
-    def init_blacklist(path):
+    def init_blacklist(self, path):
         """
         Read the blacklist file into a list of ignored spells.
 
-        :param path: the relative path to the blacklist file
+        :param path: the path to the blacklist file
         :return: a list of blacklisted spells
         """
         with open(path, 'r') as bl_handle:
-            return bl_handle.read().splitlines()
+            self.blacklist = bl_handle.read().splitlines()
 
     def is_blacklisted(self, spell_name):
         """
