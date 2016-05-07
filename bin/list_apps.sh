@@ -9,7 +9,19 @@ OUTFILE="apps_$(date +'%y%m%d')"
 # TODO: should auto find just latest file..
 
 # shellcheck disable=SC2086
-[[ $# -eq 0 ]] && echo "Usage: $(basename $0) guild_roster_file" && exit 1
+PROG="$(basename $0)"
+
+[[ $# -eq 0 ]] && echo "Usage: $PROG -verbose -dps guild_roster_file" && exit 1
+
+VERBOSE=0
+DPS_APPS=0
+
+WANT_APPS=
+[[ $PROG == "list_members.sh" ]] && WANT_APPS="-v"
+
+# TRIVIAL: order matters, etc.
+[[ $# -gt 0 && $1 =~ -v ]] && VERBOSE=1 && shift
+[[ $# -gt 0 && $1 =~ -d ]] && DPS_APPS=1 && shift   # -d -dps   --dps,   etc.
 
 ROSTER_FILE="$1"
 if [[ ! -f "$ROSTER_FILE" ]]; then
@@ -20,7 +32,7 @@ if [[ ! -f "$ROSTER_FILE" ]]; then
   fi
 fi
 
-grep -h 'Applicant' "$ROSTER_FILE" |
+grep -h $WANT_APPS 'Applicant' "$ROSTER_FILE" |
   ruby -n -e '
   a = $_.chomp.split("\t")
 
@@ -38,9 +50,21 @@ grep -h 'Applicant' "$ROSTER_FILE" |
 
   print("#{a[0]},#{short[i]},#{a[0]}\t# #{app_date}\n")
 ' |
-  sort -u -t, -k2,3 # > "$OUTFILE"
+  sort -u -t, -k2,3 > "$OUTFILE"
 
-ls "$OUTFILE"
+if [[ $DPS_APPS -ne 0 ]]; then
+  < "$OUTFILE" ruby -n -e '
+    dps = %w[ BRD BST BER ENC MAG MNK NEC RNG ROG WIZ ]
+    puts $_ if dps.find_index($_.split(",")[1])
+  '
+else
+  cat "$OUTFILE"
+fi
+
+
+rm "$OUTFILE"
+
+[[ $VERBOSE -eq 0 ]] && exit 0
 
 echo ""
 echo "TODO:"

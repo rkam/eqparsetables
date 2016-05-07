@@ -2,4 +2,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-rm -f ./*.added ./*.missing _eq_ra/testdata/_test*.out
+rm -f _eq_ra/testdata/_test*.out
+rm -f ./*.added ./*.missing
+rm -f ./all_pla*
+rm -f ./app_perfs/*
+rmdir ./app_perfs
