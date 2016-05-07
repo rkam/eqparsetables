@@ -1,8 +1,10 @@
-Dracul      Lichulil
-Hondo       Elaugmyr
-Scorpion    Blackdiamond
-Tigger      Hutarx
-Ally        Thousand
-Jamanacuba  Souletum
-Vivamort    Innoruuk
-Sacagawea   Treesome
+Dracul	Lichulil
+Hondo	Elaugmyr
+Scorpion	Blackdiamond
+Tigger	Hutarx
+Ally	Thousand
+Jamanacuba	Souletum
+Vivamort	Innoruuk
+Sacagawea	Treesome
+
+# vim:ts=16:sw=16:sts=16:et:colorcolumn=80

@@ -10,21 +10,7 @@ OUTFILE="all_players_$(date +'%y%m%d')"
 
 # shellcheck disable=SC2016
 grep -h '^[0-9]' $ROSTERS_DIR/Raid*.txt |
-  ruby -n -e '
-  a = $_.split("\t")
-
-  next if a[2] == "50"
-
-  long = [  "Bard", "Beastlord", "Berserker", "Cleric", "Druid",
-            "Enchanter", "Magician", "Monk", "Necromancer", "Paladin",
-            "Ranger", "Rogue", "Shadow Knight", "Shaman", "Warrior", "Wizard" ]
-
-  short = %w[ BRD BST BER CLR DRU ENC MAG MNK NEC PAL RNG ROG SHD SHA WAR WIZ ]
-
-  i = long.find_index(a[3])
-
-  print("#{a[1]},#{short[i]},#{a[1]}\n")
-' |
+  bin/raid_to_ini.rb |
   sort -u -t, -k2,3 > "$OUTFILE"
 
 ls "$OUTFILE"

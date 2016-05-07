@@ -22,7 +22,11 @@ VERIFY_FILE=_eq_ra/testdata/expected.txt
 trap 'rm $TEST_OUTPUT; exit' 1 2 3 15
 
 python3 eqparsedpstables.py "$TEST_INPUT" > "$TEST_OUTPUT" 2>&1
-[[ $? -ne 0 ]] && echo -e "FAIL\n# Script failed" && exit 1
+if [[ $? -ne 0 ]]; then
+ echo -e "FAIL\n# Script failed"
+ echo -e "# python3 eqparsedpstables.py $TEST_INPUT # > $TEST_OUTPUT"
+ exit 1
+fi
 
 diff -q "$VERIFY_FILE" "$TEST_OUTPUT" > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then

@@ -16,8 +16,13 @@ PROG="$(basename $0)"
 VERBOSE=0
 DPS_APPS=0
 
-WANT_APPS=
-[[ $PROG == "list_members.sh" ]] && WANT_APPS="-v"
+if [[ $PROG == "list_members.sh" ]]; then
+  GREP_WANT_APPS="-v"
+  RUBY_WANT_APPS=
+else
+  GREP_WANT_APPS=
+  RUBY_WANT_APPS="-a"
+fi
 
 # TRIVIAL: order matters, etc.
 [[ $# -gt 0 && $1 =~ -v ]] && VERBOSE=1 && shift
@@ -32,31 +37,12 @@ if [[ ! -f "$ROSTER_FILE" ]]; then
   fi
 fi
 
-grep -h $WANT_APPS 'Applicant' "$ROSTER_FILE" |
-  ruby -n -e '
-  a = $_.chomp.split("\t")
-
-  next if a[1] == "50"      # shouldnt happen
-
-  app_date = a[-1].split(" ")[-1]
-
-  long = [  "Bard", "Beastlord", "Berserker", "Cleric", "Druid",
-            "Enchanter", "Magician", "Monk", "Necromancer", "Paladin",
-            "Ranger", "Rogue", "Shadow Knight", "Shaman", "Warrior", "Wizard" ]
-
-  short = %w[ BRD BST BER CLR DRU ENC MAG MNK NEC PAL RNG ROG SHD SHA WAR WIZ ]
-
-  i = long.find_index(a[2])
-
-  print("#{a[0]},#{short[i]},#{a[0]}\t# #{app_date}\n")
-' |
+grep -h $GREP_WANT_APPS 'Applicant' "$ROSTER_FILE" |
+  bin/guild_to_ini.rb $RUBY_WANT_APPS |
   sort -u -t, -k2,3 > "$OUTFILE"
 
 if [[ $DPS_APPS -ne 0 ]]; then
-  < "$OUTFILE" ruby -n -e '
-    dps = %w[ BRD BST BER ENC MAG MNK NEC RNG ROG WIZ ]
-    puts $_ if dps.find_index($_.split(",")[1])
-  '
+  bin/dps_from_ini.rb "$OUTFILE"
 else
   cat "$OUTFILE"
 fi

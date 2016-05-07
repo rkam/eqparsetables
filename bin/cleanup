@@ -6,4 +6,4 @@ rm -f _eq_ra/testdata/_test*.out
 rm -f ./*.added ./*.missing
 rm -f ./all_pla*
 rm -f ./app_perfs/*
-rmdir ./app_perfs
+[[ -d  ./app_perfs ]] && rmdir ./app_perfs
