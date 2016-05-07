@@ -1,12 +1,12 @@
 import sqlite3
-import collections
-import operator
 import everquestinfo as eq
 
 
 class ParseTable:
-    def __init__(self, db_cursor):
-        self.cur = db_cursor
+    def __init__(self, eq_class, cast_data, spell_data):
+        self.class_name = eq.eq_classes.get(eq_class, 'unknown')
+        self.casts = sorted(cast_data)
+        self.spells = spell_data
         pass
 
     def __iter__(self):
@@ -15,11 +15,14 @@ class ParseTable:
     def __next__(self):
         pass
 
-    def getHeader(self):
-        pass
+    def get_players(self):
+        return [x[0] for x in self.casts]
 
-    def getTotals(self):
-        pass
+    def get_totals(self):
+        return [sum(x[1:]) for x in self.casts]
+
+    def get_spells(self):
+        return self.spells
 
 
 class ParseDB:
@@ -62,33 +65,10 @@ class ParseDB:
         """
         Create the parse table of a single class.
 
-        :param eq_class: The EQ abbreviation of the class to be printed
-        :return: none
+        :param eq_class: The EQ abbreviation of the desired class
+        :return: a ParseTable containing the casting information recorded for all members of a given class
         """
-        class_name = eq.eq_classes.get(eq_class, 'unknown')
-        table_spells = sorted(self.spells_cast_by_class[eq_class])
-        spell_query = '"{0}"'.format('","'.join(table_spells))
-        self.cur.execute('SELECT player, %s FROM %s;' % (spell_query, class_name))
-        rows = self.cur.fetchall()
-
-        print('[size=5][b]{0}[/b][/size]'.format(class_name))
-
-        db_data = []
-        for i, row in enumerate(rows):
-            db_data.append([d for d in row])
-
-        column_names = [str(d[0]) for d in self.cur.description]
-        column_names[0] = ''
-        all_data = collections.deque(sorted(db_data, key=operator.itemgetter(0)))
-        all_data.appendleft(column_names)
-
-        print('[table]')
-        for j, column in enumerate(all_data[0]):
-            if j is 0 or j is 1:
-                print('[tr][td][b]{0}[/b][/td][/tr]'.format('[/b][/td][td][b]'.join(str(row[j]) for row in all_data)))
-            else:
-                print('[tr][td]{0}[/td][/tr]'.format('[/td][td]'.join(str(row[j]) for row in all_data)))
-        print('[/table]')
+        return ParseTable(eq_class, self.get_all(eq_class), self.get_spells(eq_class))
 
     def get_players(self, eq_class):
         class_name = eq.eq_classes.get(eq_class, 'unknown')
@@ -99,10 +79,13 @@ class ParseDB:
         class_name = eq.eq_classes.get(eq_class, 'unknown')
         table_spells = sorted(self.spells_cast_by_class[eq_class])
         player_total = '("{0}") AS Total'.format('" + "'.join(table_spells))
-        # query = "SELECT %s FROM %s;"
-        # self.cur.execute(query, (player_total, class_name))
-        self.cur.execute('SELECT %s FROM %s' % (player_total, class_name))
+        self.cur.execute('SELECT player, %s FROM %s' % (player_total, class_name))
         return self.cur.fetchall()
+
+    def get_spells(self, eq_class):
+        class_name = eq.eq_classes.get(eq_class, 'unknown')
+        self.cur.execute('PRAGMA TABLE_INFO(%s)' % class_name)
+        return [row[1] for row in self.cur.fetchall()[1:]]
 
     def get_all(self, eq_class):
         class_name = eq.eq_classes.get(eq_class, 'unknown')
