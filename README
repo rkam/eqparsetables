@@ -1,0 +1,35 @@
+
+bin/chk_players.sh    # Check to see if raiders are unknown (not in config.ini)
+                      #  All files in "_eq_ra/dps_parses" to stdout
+                      #   - more verbose if output to tty
+                      #   - e.g. can redirect directly into a config file
+
+bin/doall             # run the parser on all files within a directory and
+                      #   output a results file in another directory
+                      # currently: "_eq_ra/dps_parses/" --> "_eq_ra/dps_results/"
+
+########## TEMP/INTERIM ##########
+
+bin/get_app_parses.sh # TEMP script to make a report of all apps for
+                      #       posting feedback on forums.
+# NOTE: Guild roster is CURRENTLY HARDWIRED to
+#           "_eq_ra/guild/Reckless Ascension-20160503-153045.txt"
+#  (this is a TEMPORARY measure until parser is better - needed results asap)
+
+######## MISC and HELPERS ########
+
+bin/get_chars.sh      # Extract all players and their class from RaidRoster dumps
+                      # Checks all files WITHIN "./_eq_ra/roster"
+                      # Puts OUTPUT in "all_players_$(date +'%y%m%d')
+
+                      # The following dump in ini-file format (i.e. can be appended.)
+                      # BOTH REQUIRE Guild Dump file specified
+                      #   add --dps to RESTRICT to DPS classes
+bin/list_members.sh   # Extract all full members and their class from Guild dumps
+bin/list_apps.sh      # Extract all applicants, their class and joined-date from Guild dumps
+
+######### TESTING ################
+
+bin/runtests          # verify dps parse
+bin/cleanup           # remove any temp files (e.g. runtests leftovers upon FAIL)
+

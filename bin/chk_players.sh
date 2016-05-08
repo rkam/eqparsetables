@@ -4,7 +4,7 @@
 #   compare that with all the characters listed in the Roster files, and
 #   show the difference in the format of the config file.
 
-DPS_PARSES_DIR="_dps_parses"
+DPS_PARSES_DIR="_eq_ra/dps_parses"
 
 EXISTING_CHARS="_eq_ra/data/config.ini"
 BLACKLIST_FILE="_eq_ra/data/mobs_blacklist.ini"
