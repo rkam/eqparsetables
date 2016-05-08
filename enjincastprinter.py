@@ -25,3 +25,17 @@ def print_cast_tables(tables: [parsedb.CastTable]):
         padding = '\n\n' if loop_count else ''
         print(padding)
         print_cast_table(table)
+
+
+def print_dps_table(mob, fight_time, guild_stats, dpser_dod):
+    print('[size=5][b]{0} in {1} seconds[/b][/size]'.format(mob, fight_time))
+    print('[table]')
+    print('[tr][td][b][/b][/td][td][b]SDPS[/b][/td][td][b]Total DMG[/b][/td][td][b]Percentage[/b][/td][/tr]')
+    print('[tr][td][b]Guild[/b][/td][td][b]{0}[/b][/td][td][b]{1}[/b][/td][td][b]{2}%[/b][/td][/tr]'
+          .format(guild_stats['total'], guild_stats['sdps'], guild_stats['pct']))
+    for player, player_stats in dpser_dod.items():
+        print('[tr][td]{0}[/td][td]{1}[/td][td]{2}[/td][td]{3}%[/td][/tr]'.format(player,
+                                                                                  player_stats['sdps'],
+                                                                                  player_stats['total'],
+                                                                                  player_stats['pct']))
+    print('[/table]')
