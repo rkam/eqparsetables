@@ -111,3 +111,4 @@ FILES=$(ls ./"$OUT_DIR" 2>/dev/null)
 
 rmdir "$OUT_DIR" > /dev/null 2>&1       # in case we created it and nop
 
+exit 0

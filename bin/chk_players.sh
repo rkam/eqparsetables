@@ -6,8 +6,9 @@
 
 DPS_PARSES_DIR="_eq_ra/dps_parses"
 
-EXISTING_CHARS="_eq_ra/data/config.ini"
+EXISTING_CHARS="_eq_ra/data/full_members.ini _eq_ra/data/applicants.ini _eq_ra/data/others.ini"
 BLACKLIST_FILE="_eq_ra/data/mobs_blacklist.ini"
+PETS_FILE="_eq_ra/data/pet_owners.txt"
 
 MISSING_CHARS_FILE="$$.missing"
 OUT_FILE="$$.added"
@@ -26,19 +27,24 @@ fgrep -f "$MISSING_CHARS_FILE" "$ROSTER_FILE" > "$OUT_FILE"
 
 if [[ ! -s $OUT_FILE ]]; then
   cat $OUT_FILE
-  echo "Cannot find ANY missing in the rosters (pet? mob? => $BLACKLIST_FILE)."
+  echo "Cannot find ANY missing in the rosters."
+  echo "  (pet? => $PETS_FILE)."
+  echo "  (mob? => $BLACKLIST_FILE)."
   cat "$MISSING_CHARS_FILE"
-  exit 1
+  exit 0
 fi
 
-# If output is to tty explain, otherwise probably appending to $EXISTING_CHARS
+# If output is to tty explain, allow for appending to config file.
 
 if [[ -t 1 ]]; then
   echo ""
-  echo "Need to hand-merge these into $EXISTING_CHARS"
+  echo "Need to hand-merge these into one of:"
+  echo " $EXISTING_CHARS"
   echo "    # because of the section headers"
   echo ""
 fi
 
 cat "$OUT_FILE"
-rm "$OUT_FILE"
+rm -f "$OUT_FILE"
+
+exit 0
