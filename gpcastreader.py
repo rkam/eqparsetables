@@ -108,7 +108,7 @@ class GPDPSReader:
 
     def init_dps(self):
         dpser = 'unknown'
-        gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`]+ ?)+) on \d{1,2}/\d{1,2}/\d{2,4} in (?P<time>\d{1,5})sec')
+        gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on \d{1,2}/\d{1,2}/\d{2,4} in (?P<time>\d{1,5})sec')
         gp_footer = 'Produced by GamParse'
         name_grabber = re.compile('\[B\](?P<name>\w+)\[/B\]')
         dps_grabber = re.compile('(?P<total>\d+) \@ (?P<sdps>\d+) sdps \((?P<dps>\d+) dps in (?P<time>\d+)s\) \[(?P<pct>\d+(\.\d+)?)%\]')
