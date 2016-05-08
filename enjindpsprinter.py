@@ -1,6 +1,7 @@
 import operator
 import collections
 import sqlite3
+import sys
 import everquestinfo as eq
 
 # NOTE: different spacing in this file to accomodate the print ruler
@@ -10,7 +11,7 @@ class EnjinDPSPrinter:
     self.dps_entries = reader.dps_entries
     self.event       = reader.event
 
-  def print_all_tables(self):
+  def print_all_tables(self, include_class):
     """Print all parsed class tables in enjin forum table format.
 
     :rtype: none
@@ -25,9 +26,15 @@ class EnjinDPSPrinter:
 
     first = True
     for data in self.dps_entries:
-      print('%15s %12s %10s %10s %4s %4s' % (
-                                data['name'], data['total'], data['dps'],
-                                data['sdps'], data['time'], data['pct']))
+      sys.stdout.write('%15s %12s %10s %10s %4s %4s' % (
+                              data['name'], data['total'], data['dps'],
+                              data['sdps'], data['time'], data['pct']
+                              ))
+      if include_class:
+        print(' %4s' % (data['class']))
+      else:
+        print("")
+
       if first:
         print("")
         first = False

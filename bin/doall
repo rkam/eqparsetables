@@ -5,9 +5,16 @@ IFS=$'\n\t'
 PARSE_DIR="_eq_ra/dps_parses"
 OUT_DIR="_eq_ra/dps_results"
 
+WANT_CLASSES=
+if [[ $# -gt 0 && $1 =~ -c ]]; then
+  WANT_CLASSES="-c"
+  OUT_DIR="_eq_ra/dps_results_c"
+  shift
+fi
+
 [[ -d $OUT_DIR ]] || mkdir -p $OUT_DIR
 
 for i in "$PARSE_DIR"/160*
 do
-  python3 eqparsedpstables.py "$i" > "$OUT_DIR/${i#$PARSE_DIR/}"
+  python3 eqparsedpstables.py $WANT_CLASSES "$i" > "$OUT_DIR/${i#$PARSE_DIR/}"
 done

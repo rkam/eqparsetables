@@ -228,6 +228,7 @@ class GPDPSReader:
 
                 dps_entries.append({
                         'name':  char_name,
+                        'class': self.config[char_name]['class'],
                         'total': scc[MAIN_DPS_LINE_TOTAL_POS],
                         'dps':   scc[MAIN_DPS_LINE_DPS_POS],
                         'sdps':  scc[MAIN_DPS_LINE_SDPS_POS][1:],
