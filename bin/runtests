@@ -1,0 +1,23 @@
+#!/bin/bash
+
+PARSE_FILE="_eq_ra/testdata/160501_Grummus.txt"
+GUILD_FILE="_eq_ra/guild/Reckless Ascension-20160503-153045.txt"
+
+echo -en "Parser "
+python3 eqparsedpstables.py "$PARSE_FILE"                 > /dev/null || exit 1
+
+echo -en "\nParser Verify "       ; bin/parsertest        > /dev/null || exit 1
+
+echo -en "\nMissing Players "     ; bin/chk_players.sh    > /dev/null || exit 1
+echo -en "\nGet chars (raiders) " ; bin/get_chars.sh      > /dev/null || exit 1
+
+# NOTE: this does both list scripts
+echo -en "\nTEMP App report "     ; bin/get_app_parses.sh > /dev/null || exit 1
+
+echo -en "\nList apps "
+          bin/list_apps.sh      "$GUILD_FILE"             > /dev/null || exit 1
+
+echo -en "\nList fm   "
+          bin/list_members.sh   "$GUILD_FILE"             > /dev/null || exit 1
+
+echo -e  "\n\nCleaning up..\n\nPASS" ; bin/cleanup
