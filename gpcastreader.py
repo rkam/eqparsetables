@@ -24,19 +24,19 @@ class GPCastReader:
         Read GamParse's forum output into a list.
 
         :param path: path to the file containing GamParse output
-        :return: a list containing the rows of GamParse's forum output
+        :return: void
         """
         with open(path, 'r') as input_handle:
             self.gp_lines = input_handle.read().splitlines()
 
     def init_config(self, path):
         """
-        Read config.txt into a dictionary of dictionaries.
+        Read config.txt into a dictionary of dictionaries with format cfg[player] = {'class', 'alias'}
 
         The config file should be in CSV format with the values name, class, alias.
 
         :param path: path to the config CSV file
-        :return: A dictionary of dictionaries with format cfg[name] = dictionary{'class', 'alias'}
+        :return: void
         """
         with open(path, 'r') as cfg_handle:
             cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),

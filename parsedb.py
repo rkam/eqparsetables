@@ -5,7 +5,7 @@ import everquestinfo as eq
 class CastTable:
     def __init__(self, eq_class, cast_data, spell_data):
         """
-        Constructs a CastTable object
+        Construct a CastTable object
 
         :param eq_class: the EQ class of the players to appear in the CastTable (e.g. 'CLR')
         :param cast_data: a list of lists of the form [[player_name, spell_1, spell_2, ..., spell_n]_1, ...]
