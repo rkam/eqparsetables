@@ -19,8 +19,12 @@ __status__     = 'Prototype'
 
 def main(argv):
     cwd = os.getcwd()
-    config_path    = cwd + '/_eq_ra/data/config.ini'
-    blacklist_path = cwd + '/_eq_ra/data/mobs_blacklist.ini'
+    config_files = {
+        'members':   cwd + '/' + '_eq_ra/data/full_members.ini',
+        'apps':      cwd + '/' + '_eq_ra/data/applicants.ini',
+        'others':    cwd + '/' + '_eq_ra/data/others.ini',
+        'blacklist': cwd + '/' + '_eq_ra/data/mobs_blacklist.ini'
+    }
 
     # parse arguments
     try:
@@ -37,7 +41,7 @@ def main(argv):
 
     for f in args:
         ecp.EnjinDPSPrinter(
-            gpd.GPDPSReader(f, config_path, blacklist_path)
+            gpd.GPDPSReader(f, config_files)
         ).print_all_tables()
 
 

@@ -42,24 +42,30 @@ class GPDPSReader:
         --- [B]DMG:[/B] 588397540 @ 6763190 sdps (6763190 dps in 87s) [100%]
 
     """
-    def __init__(self, input_path, config_path, blacklist_path):
+    def __init__(self, input_path, config_files):
         self.classes     = set()
         self.missing     = []
         self.ignored     = []
         self.event       = ""
         self.gp_lines    = self.read_raw_parse(input_path)
-        self.config      = self.init_config(config_path)
-        self.blacklist   = self.init_blacklist(blacklist_path)
+
+        self.init_configs(config_files)
+
         self.dps_entries = self.init_dps_entries()
 
     def dump_missing(self):
-        write_err("Players missing from config file:\n")
-        for char_name in self.missing:
-            write_err("\t{0}\n".format(char_name))
+        if not self.missing and not self.ignored:
+            return
 
-#        write_err("\nIgnored (blacklisted) mobs:\n")
-#        for mob in self.ignored:
-#            v_write("\t{0}\n".format(mob))
+        if self.missing:
+            write_err("Players missing from config file:\n")
+            for char_name in self.missing:
+                write_err("\t{0}\n".format(char_name))
+
+#        if self.ignored:
+#            write_err("\nIgnored (blacklisted) mobs:\n")
+#            for mob in self.ignored:
+#                v_write("\t{0}\n".format(mob))
 
         write_err("\n")
 
@@ -74,6 +80,24 @@ class GPDPSReader:
         with open(input_path, 'r') as input_handle:
             return input_handle.read().splitlines()
 
+    def init_configs(self, paths):
+        """
+        Read each config file into appropriate dictionary of dictionaries within self.
+
+        The file config.txt should be in CSV format with the values name, class, alias.
+
+        :param paths: the set of relative paths to the config files
+        :return: nothing
+        """
+
+        self.apps = self.init_config(paths['apps'])
+
+        self.config = self.init_config(paths['members'])      # includes F&F
+        self.config.update(self.apps)                         # makes a copy
+        self.config.update(self.init_config(paths['others'])) # guests, ex-RA
+
+        self.blacklist = self.init_blacklist(paths['blacklist'])
+
     @staticmethod
     def init_config(path):
         """
@@ -86,9 +110,15 @@ class GPDPSReader:
         """
         with open(path, 'r') as cfg_handle:
             cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),
-                                        ['name', 'class', 'alias'])
-            return {row['name'].strip(): {'class': row['class'].strip(),
-                                          'alias': row['alias'].strip()} for row in cfg_reader}
+                                        ['name', 'class', 'alias', 'extra'])
+            return {
+                        row['name'].strip(): {
+                            'class': row['class'].strip(),
+                            'alias': row['alias'].strip(),
+                            'extra': row['extra']
+                        }
+                        for row in cfg_reader
+                    }
 
     @staticmethod
     def init_blacklist(path):
