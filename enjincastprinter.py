@@ -33,7 +33,7 @@ def print_dps_table(mob, fight_time, guild_stats, dpser_dod, start=1, stop=sys.m
     print('[table]')
     print('[tr][td][b][/b][/td][td][b][/b][/td][td][b]SDPS[/b][/td][td][b]Total DMG[/b][/td][td][b]Percentage[/b][/td][/tr]')
     print('[tr][td][b][/b][/td][td][b]Guild[/b][/td][td][b]{0}[/b][/td][td][b]{1}[/b][/td][td][b]{2}%[/b][/td][/tr]'
-          .format(guild_stats['total'], guild_stats['sdps'], guild_stats['pct']))
+          .format(humanize(guild_stats['sdps']), humanize(guild_stats['total']), guild_stats['pct']))
     for rank, player in enumerate(sorted(dpser_dod.items(), key=lambda x: int(x[1]['sdps']), reverse=True)):
         if rank + 1 < start:
             continue
