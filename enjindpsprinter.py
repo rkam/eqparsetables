@@ -11,7 +11,7 @@ class EnjinDPSPrinter:
     self.dps_entries = reader.dps_entries
     self.event       = reader.event
 
-  def print_all_tables(self, include_class):
+  def print_all_tables(self, add_columns):
     """Print all parsed class tables in enjin forum table format.
 
     :rtype: none
@@ -30,10 +30,16 @@ class EnjinDPSPrinter:
                               data['name'], data['total'], data['dps'],
                               data['sdps'], data['time'], data['pct']
                               ))
-      if include_class:
-        print(' %4s' % (data['class']))
-      else:
-        print("")
+      if 'class' in add_columns and 'class' in data:
+        sys.stdout.write(' %4s' % (data['class']))
+      if 'groupID' in add_columns and 'gID' in data:
+        sys.stdout.write(' %4s' % (data['gID']))
+      if 'groupClasses' in add_columns and 'gClasses' in data:
+        sys.stdout.write(' %23s' % (data['gClasses']))  # 6 * 4 - 1
+#      if 'groupMembers' in add_columns and 'gMembers' in data:
+#        sys.stdout.write(' %239s' % (data['gMembers']))  # 6 * 20 - 1
+
+      sys.stdout.write("\n")
 
       if first:
         print("")

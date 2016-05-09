@@ -1,11 +1,15 @@
 - format output (vs. shell view via option) for boards
 
-- split config into  members, apps, other
-  script to create the above
-  mod parser to read each one
+√ - split config into  members, apps, other
+√   script to create the above
+√   mod parser to read each one
 
-- pet_owner.txt
+- when processing files, using NOW, not date of file being processed
+  (e.g. raid_by_groups_160508  when processing RaidRoster-20160503-192925.txt)
 
 - when move data into db, accum unattached pets into pet_owner
   (saves having to re-export via GP)
+
+√ - pet_owner.txt
+    incorporate it (need SQL)
 

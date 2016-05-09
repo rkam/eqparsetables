@@ -1,0 +1,55 @@
+#!/bin/bash
+set -u
+
+VERBOSE=0
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h) echo "Usage: $(basename "$0") [ -v ]" && exit 0
+      ;;
+    -v) (( VERBOSE = VERBOSE + 1 ))
+      ;;
+    *) echo "Ignoring unknown argument '$1'.."
+      ;;
+  esac
+  shift
+done
+
+TEST_INPUT="_eq_ra/testdata/160501_Grummus.txt"
+TEST_ROSTER="_eq_ra/testdata/RaidRoster-20160501-202524.txt"
+#TEST_GUILD="_eq_ra/testdata/Reckless Ascension-20160503-153045.txt"
+TEST_OUTPUT="_eq_ra/testdata/_test_$$.out"
+VERIFY_FILE="_eq_ra/testdata/expected_grp.txt"
+
+GROUP_OPTS="--add-group-id --add-group-classes "
+
+trap 'rm $TEST_OUTPUT; exit' 1 2 3 15
+
+GROUP_FILE=$(bin/list_groups.sh "$TEST_ROSTER")
+
+[[ ! -s "$GROUP_FILE" ]] && echo -e "Oops, no group result file '$GROUP_FILE'\n" && exit 1
+
+# shellcheck disable=SC2086
+python3 eqparsedpstables.py $GROUP_OPTS -g "$GROUP_FILE" \
+      "$TEST_INPUT" > "$TEST_OUTPUT" 2>&1
+if [[ $? -ne 0 ]]; then
+ echo -e "FAIL\n# Script failed"
+ echo -e "# python3 eqparsedpstables.py $GROUP_OPTS -g $GROUP_FILE  $TEST_INPUT # > $TEST_OUTPUT"
+ exit 1
+fi
+
+diff -q "$VERIFY_FILE" "$TEST_OUTPUT" > /dev/null 2>&1
+if [[ $? -eq 0 ]]; then
+  [[ $VERBOSE -gt 0 ]] && echo PASS
+  rm "$TEST_OUTPUT"
+  exit 0
+fi
+
+echo FAIL
+
+[[ $VERBOSE -eq 0 ]] && exit 1
+
+ARGS=
+[[ $VERBOSE -gt 1 ]] && ARGS=-wb
+
+diff $ARGS "$VERIFY_FILE" "$TEST_OUTPUT"
+exit 1

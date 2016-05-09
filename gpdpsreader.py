@@ -90,6 +90,11 @@ class GPDPSReader:
         :return: nothing
         """
 
+        if paths['groups']:
+            self.groups = self.init_group_makeup(paths['groups'])
+        else:
+            self.groups = None
+
         self.apps = self.init_config(paths['apps'])
 
         self.config = self.init_config(paths['members'])      # includes F&F
@@ -101,9 +106,9 @@ class GPDPSReader:
     @staticmethod
     def init_config(path):
         """
-        Read config.txt into a dictionary of dictionaries.
+        Read specified config file into a dictionary of dictionaries.
 
-        The file config.txt should be in CSV format with the values name, class, alias.
+        The file should be in CSV format with the values name, class, alias [, extra].
 
         :param path: the relative path to the config file
         :return: A dictionary of dictionaries with format cfg[name] = dictionary{'class', 'alias'}
@@ -115,7 +120,30 @@ class GPDPSReader:
                         row['name'].strip(): {
                             'class': row['class'].strip(),
                             'alias': row['alias'].strip(),
-                            'extra': row['extra']
+                            'extra': row['extra']               # TODO: can't do strip, because may not exist
+                        }
+                        for row in cfg_reader
+                    }
+
+    @staticmethod
+    def init_group_makeup(path):
+        """
+        Read specified config file into a dictionary of dictionaries.
+
+        The file should be in CSV format with the values name, groupID
+
+        :param path: the relative path to the config file
+        :return: A dictionary of dictionaries with format cfg[name] = dictionary{'class', 'alias'}
+        """
+        with open(path, 'r') as cfg_handle:
+            cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),
+                                                    ['name', 'num', 'classes', 'members', ],
+                             delimiter='\t')
+            return {
+                        row['name'].strip(): {
+                            'num': row['num'].strip(),
+                            'members': row['members'].strip(),
+                            'classes': row['classes'].strip()
                         }
                         for row in cfg_reader
                     }
@@ -193,6 +221,7 @@ class GPDPSReader:
                     continue
 
                 if gp_footer in line:
+                    # Done - dump any missing characters
                     self.dump_missing()
                     continue
 
@@ -226,14 +255,24 @@ class GPDPSReader:
 
                 scc = line[len(gp_bullet):].split(" ")
 
-                dps_entries.append({
-                        'name':  char_name,
-                        'class': self.config[char_name]['class'],
+                s = {
+                        'name':         char_name,
+                        'class':        self.config[char_name]['class'],
+
                         'total': scc[MAIN_DPS_LINE_TOTAL_POS],
                         'dps':   scc[MAIN_DPS_LINE_DPS_POS],
                         'sdps':  scc[MAIN_DPS_LINE_SDPS_POS][1:],
                         'time':  scc[MAIN_DPS_LINE_TIME_ATK_POS][:-2],
                         'pct':   scc[MAIN_DPS_LINE_PCT_TOTAL_POS][1:-2],
-                    })
+                    }
+
+                if char_name != 'Total' and self.groups and char_name in self.groups:
+                    group_info = self.groups[char_name]
+                    s['gID'] =      group_info['num']
+                    s['gClasses'] = group_info['classes']
+                    s['gMembers'] = group_info['members']
+
+
+                dps_entries.append(s)
 
         return dps_entries

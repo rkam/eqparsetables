@@ -25,8 +25,10 @@ bin/get_chars.sh      # Extract all players and their class from RaidRoster dump
                       # The following dump in ini-file format (i.e. can be appended.)
                       # BOTH REQUIRE Guild Dump file specified
                       #   add --dps to RESTRICT to DPS classes
-bin/list_members.sh   # Extract all full members and their class from Guild dumps
-bin/list_apps.sh      # Extract all applicants, their class and joined-date from Guild dumps
+bin/list_members.sh   # Extract all full members and their class from Raid dumps
+bin/list_apps.sh      # Extract all applicants, their class and joined-date from Raid dumps
+
+bin/list_groups.sh    # Raid dump -> "char grp# classes_in_grp members_in_grp"
 
 ######### TESTING ################
 
