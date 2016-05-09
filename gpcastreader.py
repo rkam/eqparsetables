@@ -109,7 +109,6 @@ class GPDPSReader:
     def init_dps(self):
         dpser = 'unknown'
         gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on \d{1,2}/\d{1,2}/\d{2,4} in (?P<time>\d{1,5})sec')
-        gp_footer = 'Produced by GamParse'
         name_grabber = re.compile('\[B\](?P<name>\w+)\[/B\]')
         dps_grabber = re.compile('(?P<total>\d+) \@ (?P<sdps>\d+) sdps \((?P<dps>\d+) dps in (?P<time>\d+)s\) \[(?P<pct>\d+(\.\d+)?)%\]')
         gp_bullet = ' --- '
@@ -117,27 +116,8 @@ class GPDPSReader:
         dpser_dod = collections.defaultdict(dict)
         for line in self.gp_lines:
             if line.upper().startswith('[B]'):
-                dpser = 'unknown'
-                m = gp_header.match(line[3:-4])
-                if m:
-                    dpser = 'unknown'
-                    self.mob = m.group('mob')
-                    self.time = int(m.group('time'))
-                    continue
-                if gp_footer in line:
-                    dpser = 'unknown'
-                    continue
-                n = name_grabber.match(line)
-                if n:
-                    dpser = n.group('name')
-                    if dpser == 'Total':
-                        continue
-                    else:
-                        try:
-                            self.classes.add(self.config[dpser]['class'])
-                        except KeyError as e:
-                            print('Unrecognized player {0}. Did you forget to associate a pet with its owner?'.format(e))
-                            dpser = 'unknown'
+                dpser = self.read_entry_header(gp_header, name_grabber, line)
+                if dpser == 'unknown' or dpser == 'Total':
                     continue
             if line.startswith(gp_bullet):
                 if dpser == 'unknown':
@@ -152,6 +132,31 @@ class GPDPSReader:
                         dpser_dod[dpser] = stats
 
         return dpser_dod
+
+    def read_entry_header(self, gp_header, name_grabber, line):
+        """
+        Read and extract data from a GamParse dps entry header.
+
+        :param gp_header: regex for parsing the main header of the dps output
+        :param name_grabber: regex for parsing the entry headers of the dps output
+        :param line: line of the dps output file to be parsed
+        :return: the name of the player doing the dps, if applicable, or 'unknown' if not applicable
+        """
+        dpser = 'unknown'
+        m = gp_header.match(line[3:-4])
+        n = name_grabber.match(line)
+        if m:
+            self.mob = m.group('mob')
+            self.time = int(m.group('time'))
+        elif n:
+            dpser = n.group('name')
+            try:
+                self.classes.add(self.config[dpser]['class'])
+            except KeyError as e:
+                if dpser != 'Total':
+                    print('Unrecognized player {0}. Did you forget to associate a pet with its owner?'.format(e))
+                    dpser = 'unknown'
+        return dpser
 
 
 def read_raw_parse(path):
