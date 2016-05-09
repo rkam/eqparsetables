@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+PARSE_FILE="_eq_ra/testdata/160501_Grummus.txt"
+BLACKLIST_FILE="_eq_ra/data/mobs_blacklist.ini"
+
+FULL_MEMBERS_FILE="_eq_ra/data/full_members.ini"
+APPLICANTS_FILE=_"eq_ra/data/applicants.ini"
+
+ALL_MEMBERS_FILE="./all_members.$$"
+
+trap 'rm -f $ALL_MEMBERS_FILE; exit' 1 2 3 15
+
+cat "$FULL_MEMBERS_FILE" "$APPLICANTS_FILE" > "$ALL_MEMBERS_FILE"
+
+python3 eqparsetables.py --dps -p "$PARSE_FILE" -c "$ALL_MEMBERS_FILE" -b "$BLACKLIST_FILE"
