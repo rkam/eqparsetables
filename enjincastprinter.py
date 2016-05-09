@@ -48,10 +48,14 @@ def print_dps_table(mob, fight_time, guild_stats, dpser_dod, start=1, stop=sys.m
 
 
 def humanize(s):
-    suff = ['', 'k', 'm', 'bn', 'tn']
+    suffix = ['', 'k', 'm', 'bn', 'tn']
+
+    if int(s) < 1000:
+        return s
+
     n = float(s)
     mag = 0
     while n > 1000:
         n /= 1000.0
         mag += 1
-    return '{0:.2f}{1}'.format(n, suff[mag])
+    return '{0:.2f}{1}'.format(n, suffix[mag])
