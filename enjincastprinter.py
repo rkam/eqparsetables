@@ -40,8 +40,18 @@ def print_dps_table(mob, fight_time, guild_stats, dpser_dod, start=1, stop=sys.m
         elif rank + 1 > stop:
             break
         print('[tr][td]{4}[/td][td]{0}[/td][td]{1}[/td][td]{2}[/td][td]{3}%[/td][/tr]'.format(player[0],
-                                                                                              player[1]['sdps'],
-                                                                                              player[1]['total'],
+                                                                                              humanize(player[1]['sdps']),
+                                                                                              humanize(player[1]['total']),
                                                                                               player[1]['pct'],
                                                                                               rank + 1))
     print('[/table]')
+
+
+def humanize(s):
+    suff = ['', 'k', 'm', 'bn', 'tn']
+    n = float(s)
+    mag = 0
+    while n > 1000:
+        n /= 1000.0
+        mag += 1
+    return '{0:.2f}{1}'.format(n, suff[mag])
