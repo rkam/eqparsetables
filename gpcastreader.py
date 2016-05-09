@@ -117,6 +117,7 @@ class GPDPSReader:
         dpser_dod = collections.defaultdict(dict)
         for line in self.gp_lines:
             if line.upper().startswith('[B]'):
+                dpser = 'unknown'
                 m = gp_header.match(line[3:-4])
                 if m:
                     dpser = 'unknown'
