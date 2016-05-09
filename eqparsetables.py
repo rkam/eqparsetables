@@ -2,7 +2,6 @@
 """Formats and filters GamParse spells and disc forum output."""
 
 import sys
-import getopt
 import argparse
 import os
 import gpcastreader as gpc
