@@ -15,7 +15,7 @@ def print_cast_table(table: parsedb.CastTable):
 
 def print_cast_tables(tables: [parsedb.CastTable]):
     """
-    Print all parsed class tables in enjin forum table format.
+    Print all parsed class tables in a plain text table format.
 
     :param tables: list of CastTables to be printed
     :return: void
@@ -48,17 +48,17 @@ def make_header(*args):
     Formats a row of data with bolded values.
 
     :param args: the values to be formatted
-    :return: a string corresponding to a row in enjin table format
+    :return: a string corresponding to a row in a plain text table format
     """
     return make_row(*args)
 
 
 def make_row(*args):
     """
-    Formats a row of data into enjin table format.
+    Formats a row of data into a plain text table format.
 
     :param args: the values to be formatted
-    :return: a string corresponding to a row in enjin table format
+    :return: a string corresponding to a row in a plain text table format
     """
     sys.stdout.write("%2s %20s %15s %10s   %4s" % (args))
     return ""
