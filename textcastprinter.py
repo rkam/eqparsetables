@@ -1,5 +1,6 @@
 import parsedb
 import sys
+import gpcastreader as gpc
 
 
 def print_cast_table(table: parsedb.CastTable):
@@ -26,11 +27,11 @@ def print_cast_tables(tables: [parsedb.CastTable]):
         print_cast_table(table)
 
 
-def print_dps_table(fight_info, start=1, stop=sys.maxsize):
-    stats = fight_info.guild_stats
-    dpser_dod = fight_info.dpser_dod
+def print_dps_table(reader: gpc.GPDPSReader, start=1, stop=sys.maxsize):
+    stats = reader.guild_stats
+    dpser_dod = reader.dpser_dod
     print('')
-    print('{0} in {1} seconds on {2}'.format(*fight_info.info()))
+    print('{0} in {1} seconds on {2}'.format(*reader.get_info()))
     print(make_header('', '', 'SDPS', 'Total DMG', 'Percentage'))
     print(make_header('', '__Raid__', humanize(stats['sdps']), humanize(stats['total']), stats['pct'] + '%'))
     for rank, player in enumerate(sorted(dpser_dod.items(), key=lambda x: int(x[1]['sdps']), reverse=True)):

@@ -58,7 +58,7 @@ class GPCastReader:
 
     def init_caster_dod(self):
         """
-        Extract caster names and spell cast info from GamParse forum output.
+        Extract caster names and spell cast get_info from GamParse forum output.
 
         :return: a dictionary of dictionaries with format
                  caster_dod[caster] = {'spell_1', count_1}, ..., {'spell_n', count_n}
@@ -107,8 +107,8 @@ class GPDPSReader:
 
         self.dpser_dod = self.init_dps()
 
-    def info(self):
-        return [ self.mob, self.time, self.date ]
+    def get_info(self):
+        return [self.mob, self.time, self.date]
 
     def init_dps(self):
         dpser = 'unknown'
