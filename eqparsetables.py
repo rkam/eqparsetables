@@ -6,6 +6,7 @@ import argparse
 import os
 import gpcastreader as gpc
 import enjincastprinter as ecp
+import textcastprinter as tcp
 import parsedb
 
 __author__ = 'Andrew Quinn'
@@ -32,6 +33,7 @@ def main(argv):
     parser.add_argument('-b', '--blacklist', help='path to blacklist', metavar='PATH')
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
+    parser.add_argument('--tty', action='store_true', help='output to tty (default to enjin post)')
     parser.add_argument('-f', '--dpsfirst', help='highest ranking dpser to show', metavar='FIRST')
     parser.add_argument('-l', '--dpslast', help='lowest ranking dpser to show', metavar='LAST')
 
@@ -52,11 +54,17 @@ def main(argv):
 
     if dps:
         reader = gpc.GPDPSReader(input_path, config_path)
-        ecp.print_dps_table(reader.mob, reader.time, reader.guild_stats, reader.dpser_dod, dps_first, dps_last)
+        if args.tty:
+            tcp.print_dps_table(reader, dps_first, dps_last)
+        else:
+            ecp.print_dps_table(reader, dps_first, dps_last)
     else:
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
-        ecp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+        if args.tty:
+            tcp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+        else:
+            ecp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
 
 
 if __name__ == '__main__':

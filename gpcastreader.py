@@ -103,12 +103,16 @@ class GPDPSReader:
 
         self.mob = 'unknown'
         self.time = 0
+        self.date = 'unknown'
 
         self.dpser_dod = self.init_dps()
 
+    def info(self):
+        return [ self.mob, self.time, self.date ]
+
     def init_dps(self):
         dpser = 'unknown'
-        gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on \d{1,2}/\d{1,2}/\d{2,4} in (?P<time>\d{1,5})sec')
+        gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on (?P<date>\d{1,2}/\d{1,2}/\d{2,4}) in (?P<time>\d{1,5})sec')
         name_grabber = re.compile('\[B\](?P<name>\w+)\[/B\]')
         dps_grabber = re.compile('(?P<total>\d+) \@ (?P<sdps>\d+) sdps \((?P<dps>\d+) dps in (?P<time>\d+)s\) \[(?P<pct>\d+(\.\d+)?)%\]')
         gp_bullet = ' --- '
@@ -148,6 +152,7 @@ class GPDPSReader:
         if m:
             self.mob = m.group('mob')
             self.time = int(m.group('time'))
+            self.date = m.group('date')
         elif n:
             dpser = n.group('name')
             try:

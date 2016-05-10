@@ -3,14 +3,14 @@ import sys
 
 
 def print_cast_table(table: parsedb.CastTable):
-    print('[size=5][b]{0}[/b][/size]'.format(table.class_name))
-    print('[table]')
+    print('{0}'.format(table.class_name))
+    print('')
     print(make_header('', *table.get_players()))
     print(make_header('Total', *[str(x) for x in table.get_totals()]))
     spells = table.get_spells()
     for i, row in enumerate(table.get_rows()):
         print(make_row(spells[i], *[str(x) for x in row]))
-    print('[/table]')
+    print('')
 
 
 def print_cast_tables(tables: [parsedb.CastTable]):
@@ -29,10 +29,10 @@ def print_cast_tables(tables: [parsedb.CastTable]):
 def print_dps_table(fight_info, start=1, stop=sys.maxsize):
     stats = fight_info.guild_stats
     dpser_dod = fight_info.dpser_dod
-    print('[size=5][b]{0} in {1} seconds on {2}[/b][/size]'.format(*fight_info.info()))
-    print('[table]')
+    print('')
+    print('{0} in {1} seconds on {2}'.format(*fight_info.info()))
     print(make_header('', '', 'SDPS', 'Total DMG', 'Percentage'))
-    print(make_header('', 'Raid', humanize(stats['sdps']), humanize(stats['total']), stats['pct'] + '%'))
+    print(make_header('', '__Raid__', humanize(stats['sdps']), humanize(stats['total']), stats['pct'] + '%'))
     for rank, player in enumerate(sorted(dpser_dod.items(), key=lambda x: int(x[1]['sdps']), reverse=True)):
         if rank + 1 < start:
             continue
@@ -40,7 +40,7 @@ def print_dps_table(fight_info, start=1, stop=sys.maxsize):
             break
         print(make_row(str(rank + 1), player[0], humanize(player[1]['sdps']), humanize(player[1]['total']),
                        player[1]['pct'] + '%'))
-    print('[/table]')
+    print('')
 
 
 def make_header(*args):
@@ -50,9 +50,7 @@ def make_header(*args):
     :param args: the values to be formatted
     :return: a string corresponding to a row in enjin table format
     """
-    header = '[tr][td][b]{0}[/b][/td][/tr]'
-    header_sep = '[/b][/td][td][b]'
-    return header.format(header_sep.join(args))
+    return make_row(*args)
 
 
 def make_row(*args):
@@ -62,9 +60,8 @@ def make_row(*args):
     :param args: the values to be formatted
     :return: a string corresponding to a row in enjin table format
     """
-    row = '[tr][td]{0}[/td][/tr]'
-    row_sep = '[/td][td]'
-    return row.format(row_sep.join(args))
+    sys.stdout.write("%2s %20s %15s %10s   %4s" % (args))
+    return ""
 
 
 def humanize(s):
