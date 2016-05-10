@@ -5,8 +5,8 @@ import sys
 import argparse
 import os
 import gpcastreader as gpc
-import enjincastprinter as ecp
-import textcastprinter as tcp
+import enjintableprinter as etp
+import texttableprinter as ttp
 import parsedb
 
 __author__ = 'Andrew Quinn'
@@ -55,16 +55,16 @@ def main(argv):
     if dps:
         reader = gpc.GPDPSReader(input_path, config_path)
         if args.tty:
-            tcp.print_dps_table(reader, dps_first, dps_last)
+            ttp.print_dps_table(reader, dps_first, dps_last)
         else:
-            ecp.print_dps_table(reader, dps_first, dps_last)
+            etp.print_dps_table(reader, dps_first, dps_last)
     else:
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
         if args.tty:
-            tcp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+            ttp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
         else:
-            ecp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+            etp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
 
 
 if __name__ == '__main__':
