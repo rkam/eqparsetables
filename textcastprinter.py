@@ -66,11 +66,9 @@ def make_row(*args):
 
 def humanize(s):
     suffix = ['', 'k', 'm', 'bn', 'tn']
-
-    if int(s) < 1000:
-        return s
-
     n = float(s)
+    if n < 1000:
+        return s
     mag = 0
     while n > 1000:
         n /= 1000.0
