@@ -1,7 +1,7 @@
 import parsedb
 
 
-class ParseTable:
+class TableStrings:
     def __init__(self):
         self.title = ''
         self.table_start = ''
@@ -10,7 +10,7 @@ class ParseTable:
         self.rows = []
 
 
-def print_table(table: ParseTable):
+def print_table(table: TableStrings):
     print(table.title)
     if table.table_start:
         print(table.table_start)
@@ -29,17 +29,17 @@ def format_enjin_table(table: parsedb.CastTable):
     row = '[tr][td]{0}[/td][/tr]'
     row_sep = '[/td][td]'
 
-    pt = ParseTable()
-    pt.title = '[size=5][b]{0}[/b][/size]'.format(table.class_name)
-    pt.table_start = '[table]'
-    pt.table_stop = '[/table]'
-    pt.headers = [header.format(header_sep.join([''] + table.get_players()))]
-    pt.headers.append(header.format(header_sep.join(['Total'] + [str(x) for x in table.get_totals()])))
+    ts = TableStrings()
+    ts.title = '[size=5][b]{0}[/b][/size]'.format(table.class_name)
+    ts.table_start = '[table]'
+    ts.table_stop = '[/table]'
+    ts.headers = [header.format(header_sep.join([''] + table.get_players()))]
+    ts.headers.append(header.format(header_sep.join(['Total'] + [str(x) for x in table.get_totals()])))
     spells = table.get_spells()
     t_rows = table.get_rows()
-    pt.rows = [row.format(row_sep.join([spells[i]] + [str(x) for x in tr])) for i, tr in enumerate(t_rows)]
+    ts.rows = [row.format(row_sep.join([spells[i]] + [str(x) for x in tr])) for i, tr in enumerate(t_rows)]
 
-    return pt
+    return ts
 
 
 def humanize(s):
