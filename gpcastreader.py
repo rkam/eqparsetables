@@ -9,23 +9,14 @@ class GPCastReader:
     """
     def __init__(self, input_path, config_path, blacklist_path):
         self.classes = set()
+        self.mob = ''
+        self.date = ''
+
         self.gp_lines = read_raw_parse(input_path)
-        self.blacklist = []
+        self.blacklist = read_blacklist(blacklist_path)
         self.config = init_config(config_path)
 
-        self.init_blacklist(blacklist_path)
-
         self.caster_dod = self.init_caster_dod()
-
-    def init_blacklist(self, path):
-        """
-        Read the blacklist file into a list of ignored spells.
-
-        :param path: the path to the blacklist file
-        :return: a list of blacklisted spells
-        """
-        with open(path, 'r') as bl_handle:
-            self.blacklist = bl_handle.read().splitlines()
 
     def is_blacklisted(self, spell_name):
         """
@@ -65,22 +56,19 @@ class GPCastReader:
         """
         caster = 'unknown'
         rk = re.compile(' (?:Rk\. )?(?:X{0,3})(?:IX|IV|V?I{0,3})$')
-        gp_header = re.compile('(?:Combined: )?(?:[\w`]+ )+on \d{1,2}/\d{1,2}/\d{2,4}')
-        gp_footer = 'Produced by GamParse'
+        gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on (?P<date>\d{1,2}/\d{1,2}/\d{2,4})')
+        name_grabber = re.compile('\[B\](?P<name>\w+) - \d+\[/B\]')
         gp_bullet = '   --- '
 
         caster_dod = collections.defaultdict(dict)
         for line in self.gp_lines:
             if line.upper().startswith('[B]'):
-                if gp_header.match(line[3:-4]) or gp_footer in line:
-                    caster = 'unknown'
-                    continue
-                caster = line[3:-4].split(" - ")[0]
-                if caster == 'Firiona Vie':
+                caster = self.read_entry_header(gp_header, name_grabber, line)
+                if caster == 'unknown':
                     continue
                 self.classes.add(self.config[caster]['class'])
             elif line.startswith(gp_bullet):
-                if caster == 'Firiona Vie':
+                if caster == 'unknown':
                     continue
                 scc = line[len(gp_bullet):].split(" - ")
                 spell = rk.sub('', scc[0])
@@ -92,6 +80,32 @@ class GPCastReader:
                     else:
                         caster_dod[caster].update({spell: scc[1]})
         return caster_dod
+
+    def read_entry_header(self, gp_header, name_grabber, line):
+        """
+        Read and extract data from a GamParse dps entry header.
+
+        :param gp_header: regex for parsing the main header of the cast output
+        :param name_grabber: regex for parsing the entry headers of the cast output
+        :param line: line of the cast output file to be parsed
+        :return: the name of the player casting, if applicable, or 'unknown' if not applicable
+        """
+        player = 'unknown'
+        m = gp_header.match(line[3:-4])
+        n = name_grabber.match(line)
+        if m:
+            self.mob = m.group('mob')
+            self.date = m.group('date')
+            pass
+        elif n:
+            player = n.group('name')
+            try:
+                self.classes.add(self.config[player]['class'])
+            except KeyError as e:
+                if player != 'Total':
+                    print('Unrecognized player {0}. Please update your config file.'.format(e))
+                    player = 'unknown'
+        return player
 
 
 class GPDPSReader:
@@ -146,7 +160,7 @@ class GPDPSReader:
         :param line: line of the dps output file to be parsed
         :return: the name of the player doing the dps, if applicable, or 'unknown' if not applicable
         """
-        dpser = 'unknown'
+        player = 'unknown'
         m = gp_header.match(line[3:-4])
         n = name_grabber.match(line)
         if m:
@@ -154,14 +168,14 @@ class GPDPSReader:
             self.time = int(m.group('time'))
             self.date = m.group('date')
         elif n:
-            dpser = n.group('name')
+            player = n.group('name')
             try:
-                self.classes.add(self.config[dpser]['class'])
+                self.classes.add(self.config[player]['class'])
             except KeyError as e:
-                if dpser != 'Total':
+                if player != 'Total':
                     print('Unrecognized player {0}. Did you forget to associate a pet with its owner?'.format(e))
-                    dpser = 'unknown'
-        return dpser
+                    player = 'unknown'
+        return player
 
 
 def read_raw_parse(path):
@@ -173,6 +187,17 @@ def read_raw_parse(path):
         """
         with open(path, 'r') as input_handle:
             return input_handle.read().splitlines()
+
+
+def read_blacklist(path):
+    """
+    Read the blacklist file into a list of ignored spells.
+
+    :param path: the path to the blacklist file
+    :return: a list of blacklisted spells
+    """
+    with open(path, 'r') as bl_handle:
+        return bl_handle.read().splitlines()
 
 
 def init_config(path):
