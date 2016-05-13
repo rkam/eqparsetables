@@ -42,6 +42,22 @@ def format_enjin_table(table: parsedb.CastTable):
     return ts
 
 
+def format_tty_table(table: parsedb.CastTable):
+    row = '{0:35}{1}'
+
+    ts = TableStrings()
+    ts.title = table.class_name
+    ts.table_start = '\n'
+    ts.table_stop = '\n'
+    ts.headers = [row.format('', ''.join('{:15}'.format(x) for x in table.get_players()))]
+    ts.headers.append(row.format('Total', ''.join(['{:15}'.format(str(x)) for x in table.get_totals()])))
+    spells = table.get_spells()
+    t_rows = table.get_rows()
+    ts.rows = [row.format(spells[i], ''.join(['{:15}'.format(str(x)) for x in tr])) for i, tr in enumerate(t_rows)]
+
+    return ts
+
+
 def humanize(s):
     suffix = ['', 'k', 'm', 'bn', 'tn']
     n = float(s)
