@@ -7,6 +7,7 @@ import os
 import gpcastreader as gpc
 import enjintableprinter as etp
 import texttableprinter as ttp
+import tableformatter as tf
 import parsedb
 
 __author__ = 'Andrew Quinn'
@@ -24,7 +25,6 @@ def main(argv):
     config_path = cwd + '/config.ini'
     blacklist_path = cwd + '/blacklist.ini'
     input_path = cwd + '/parse.txt'
-    dps = False
     dps_first = 1
     dps_last = sys.maxsize
 
@@ -46,13 +46,12 @@ def main(argv):
     if args.config:
         config_path = args.config
     if args.dps:
-        dps = True
         if args.dpsfirst:
             dps_first = int(args.dpsfirst)
         if args.dpslast:
             dps_last = int(args.dpslast)
 
-    if dps:
+    if args.dps:
         reader = gpc.GPDPSReader(input_path, config_path)
         if args.tty:
             ttp.print_dps_table(reader, dps_first, dps_last)
@@ -62,9 +61,11 @@ def main(argv):
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
         if args.tty:
-            ttp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+            for eq_class in sorted(reader.classes):
+                tf.print_table(tf.format_tty_table(pdb.get_cast_table(eq_class)))
         else:
-            etp.print_cast_tables((pdb.get_cast_table(eq_class) for eq_class in sorted(reader.classes)))
+            for eq_class in sorted(reader.classes):
+                tf.print_table(tf.format_enjin_table(pdb.get_cast_table(eq_class)))
 
 
 if __name__ == '__main__':
