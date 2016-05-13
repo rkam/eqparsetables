@@ -5,8 +5,6 @@ import sys
 import argparse
 import os
 import gpcastreader as gpc
-import enjintableprinter as etp
-import texttableprinter as ttp
 import tableformatter as tf
 import parsedb
 
@@ -49,28 +47,34 @@ def main(argv):
     if args.dps:
         if args.dpsfirst:
             dps_first = int(args.dpsfirst)
+            if dps_first < 1:
+                dps_first = 1
         if args.dpslast:
             dps_last = int(args.dpslast)
 
     if args.dps:
         reader = gpc.GPDPSReader(input_path, config_path)
+        pdb = parsedb.ParseDB(reader.config, dps_reader=reader)
+        dtab = pdb.get_dps_table(first=dps_first, last=dps_last)
         if args.tty:
-            ttp.print_dps_table(reader, dps_first, dps_last)
+            tf.print_table(tf.format_tty_table(dtab))
         else:
-            etp.print_dps_table(reader, dps_first, dps_last)
+            tf.print_table(tf.format_enjin_table(dtab))
     else:
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
-        pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
+        pdb = parsedb.ParseDB(reader.config, caster_dod=reader.caster_dod)
         if args.tty:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
                     print(padding)
-                tf.print_table(tf.format_tty_table(pdb.get_cast_table(eq_class)))
+                ptab = pdb.get_cast_table(eq_class)
+                tf.print_table(tf.format_tty_table(ptab))
         else:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
                     print(padding)
-                tf.print_table(tf.format_enjin_table(pdb.get_cast_table(eq_class)))
+                ptab = pdb.get_cast_table(eq_class)
+                tf.print_table(tf.format_enjin_table(ptab))
 
 
 if __name__ == '__main__':

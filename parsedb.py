@@ -1,97 +1,104 @@
 import sqlite3
 import everquestinfo as eq
 
+import itertools as it
+import operator as op
+import collections as co
+import sys
 
-class CastTable:
-    def __init__(self, eq_class, cast_data, spell_data):
-        """
-        Construct a CastTable object
 
-        :param eq_class: the EQ class of the players to appear in the CastTable (e.g. 'CLR')
-        :param cast_data: a list of lists of the form [[player_name, spell_1, spell_2, ..., spell_n]_1, ...]
-        :param spell_data: a list of spell names corresponding to the spells in cast_data
-        :return: a CastTable object
-        """
-        self.class_name = eq.eq_classes.get(eq_class, 'unknown')
-        self.casts = sorted(cast_data)
-        self.spells = spell_data
+class ParseTable:
+    def __init__(self, title, column_labels, rows, is_cast=False):
+        self.title = title
+        self.column_labels = column_labels
+        self.rows = rows
+        self.is_cast = is_cast
 
-    def get_rows(self):
-        return zip(*[x[1:] for x in self.casts])
-
-    def get_players(self):
-        return [x[0] for x in self.casts]
-
-    def get_totals(self):
-        return [sum(x[1:]) for x in self.casts]
-
-    def get_spells(self):
-        return self.spells
+    def get_spell_totals(self):
+        return [sum(x) for x in zip(*[c[1:] for c in self.rows])]
 
 
 class ParseDB:
-    def __init__(self, spells_cast_by_class, classes_parsed, caster_dod, config):
-        self.spells_cast_by_class = spells_cast_by_class
-        self.classes_parsed = classes_parsed
-        self.caster_dod = caster_dod
+    def __init__(self, config, caster_dod={}, dps_reader=None):
         self.config = config
+        self.caster_dod = caster_dod
+        self.dps_reader = dps_reader
 
         self.conn = sqlite3.connect(':memory:')
         self.cur = self.conn.cursor()
 
-        self.create_class_tables()
+        self.create_player_table()
+        self.create_cast_tables()
+        self.create_dps_table()
 
     def __del__(self):
         self.cur.close()
         self.conn.close()
 
-    def create_class_tables(self):
-        """
-        Create a table for each class with unique spell names as columns and casters as rows.
+    def create_player_table(self):
+        self.cur.execute('CREATE TABLE players ('
+                         '  name TEXT NOT NULL, '
+                         '  class TEXT NOT NULL, '
+                         '  alias TEXT NOT NULL'
+                         ')')
+        for player in self.config.items():
+            self.cur.execute('INSERT INTO players (name, class, alias) VALUES (?, ?, ?)', (player[0],
+                                                                                           player[1]['class'],
+                                                                                           player[1]['alias']))
 
-        :return: void
-        """
-        for eq_class in self.classes_parsed:
-            class_name = eq.eq_classes.get(eq_class, 'unknown')
-            class_spells = ', '.join('"{0}" INTEGER(5) DEFAULT 0'.format(spell)
-                                     for spell in sorted(self.spells_cast_by_class[eq_class]))
-            self.cur.execute("CREATE TABLE %s (player TEXT NOT NULL, %s);" % (class_name, class_spells))
+    def create_cast_tables(self):
+        self.cur.execute('CREATE TABLE casts ('
+                         '  player TEXT NOT NULL, '
+                         '  spell TEXT NOT NULL, '
+                         '  count INTEGER(5) DEFAULT 0'
+                         ')')
+        for player in self.caster_dod.items():
+            for spell in player[1]:
+                self.cur.execute('INSERT INTO casts '
+                                 '(player, spell, count) '
+                                 'VALUES (?, ?, ?)',
+                                 (player[0], spell, player[1][spell]))
 
-        for caster, cast in self.caster_dod.items():
-            class_name = eq.eq_classes.get(self.config[caster]['class'], 'unknown')
-            spells_cast = sorted(list(self.caster_dod[caster].keys()))
-            cast_counts = [cast[spell] for spell in spells_cast]
-            self.cur.execute("INSERT INTO %s (player, %s) VALUES (%s, %s);" % (
-                class_name, ", ".join('"{0}"'.format(spell) for spell in spells_cast), '"{0}"'.format(caster),
-                ", ".join(cast_counts)))
+    def create_dps_table(self):
+        self.cur.execute('CREATE TABLE deeps ('
+                         '  player TEXT NOT NULL, '
+                         '  damage INTEGER(10), '
+                         '  sdps INTEGER(10), '
+                         '  dps INTEGER(10), '
+                         '  time INTEGER(10), '
+                         '  percentage INTEGER(3)'
+                         ')')
+
+        if self.dps_reader:
+            for pl in self.dps_reader.dpser_dod.items():
+                self.cur.execute('INSERT INTO deeps '
+                                 '(player, damage, sdps, dps, time, percentage) '
+                                 'VALUES(?, ?, ?, ?, ?, ?)',
+                                 (pl[0], pl[1]['total'], pl[1]['sdps'], pl[1]['dps'], pl[1]['time'], pl[1]['pct']))
 
     def get_cast_table(self, eq_class):
-        """
-        Create the cast parse table of a single class.
+        self.cur.execute('SELECT spell, name, count '
+                         'FROM (SELECT name FROM players WHERE class=?) '
+                         'JOIN casts ON name=casts.player;', (eq_class, ))
+        data = self.cur.fetchall()
+        players = sorted(set(row[1] for row in data))
+        pivot = ((spell, co.defaultdict(lambda: None, (it.islice(d, 1, None) for d in data)))
+                 for spell, data in it.groupby(sorted(data), op.itemgetter(0)))
 
-        :param eq_class: The EQ abbreviation of the desired class
-        :return: a ParseTable containing the casting information recorded for all members of a given class
-        """
-        return CastTable(eq_class, self.get_all(eq_class), self.get_spells(eq_class))
+        rows = [[spell] + [casts.get(p, 0) for p in players] for spell, casts in pivot]
+        return ParseTable(eq.eq_classes.get(eq_class), [''] + players, rows, is_cast=True)
 
-    def get_players(self, eq_class):
-        class_name = eq.eq_classes.get(eq_class, 'unknown')
-        self.cur.execute('SELECT player FROM %s' % class_name)
-        return self.cur.fetchall()
-
-    def get_totals(self, eq_class):
-        class_name = eq.eq_classes.get(eq_class, 'unknown')
-        table_spells = sorted(self.spells_cast_by_class[eq_class])
-        player_total = '("{0}") AS Total'.format('" + "'.join(table_spells))
-        self.cur.execute('SELECT player, %s FROM %s' % (player_total, class_name))
-        return self.cur.fetchall()
-
-    def get_spells(self, eq_class):
-        class_name = eq.eq_classes.get(eq_class, 'unknown')
-        self.cur.execute('PRAGMA TABLE_INFO(%s)' % class_name)
-        return [row[1] for row in self.cur.fetchall()[1:]]
-
-    def get_all(self, eq_class):
-        class_name = eq.eq_classes.get(eq_class, 'unknown')
-        self.cur.execute('SELECT * FROM %s' % class_name)
-        return self.cur.fetchall()
+    def get_dps_table(self, eq_class=None, first=1, last=sys.maxsize):
+        if eq_class:
+            self.cur.execute('SELECT p.name, d.sdps, d.damage, d.percentage '
+                             'FROM (SELECT name FROM players WHERE class=?) p '
+                             'JOIN deeps d ON  p.name=d.player '
+                             'ORDER BY d.sdps DESC;', (eq_class, ))
+        else:
+            self.cur.execute('SELECT player, sdps, damage, percentage FROM deeps ORDER BY sdps DESC')
+        data = self.cur.fetchall()[first - 1: last]
+        stats = self.dps_reader.guild_stats
+        rows = [("Raid", stats['sdps'], stats['total'], stats['pct'])] + [x for x in data]
+        columns = ['', 'SDPS', 'Total DMG', 'Percentage']
+        title = '{0} in {1} on {2}'.format(*self.dps_reader.get_info())
+        return ParseTable(title, columns, rows)
