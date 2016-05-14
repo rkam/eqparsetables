@@ -27,6 +27,7 @@ def main(argv):
     input_path = cwd + '/parse.txt'
     dps_first = 1
     dps_last = sys.maxsize
+    padding = '\n\n'
 
     parser = argparse.ArgumentParser(description='Transform GamParse output into you favorite forum table format.')
     parser.add_argument('-p', '--parsefile', help='path to GamParse output', metavar='PATH')
@@ -61,10 +62,14 @@ def main(argv):
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.get_spells_cast_by_class(), reader.classes, reader.caster_dod, reader.config)
         if args.tty:
-            for eq_class in sorted(reader.classes):
+            for i, eq_class in enumerate(sorted(reader.classes)):
+                if i:
+                    print(padding)
                 tf.print_table(tf.format_tty_table(pdb.get_cast_table(eq_class)))
         else:
-            for eq_class in sorted(reader.classes):
+            for i, eq_class in enumerate(sorted(reader.classes)):
+                if i:
+                    print(padding)
                 tf.print_table(tf.format_enjin_table(pdb.get_cast_table(eq_class)))
 
 

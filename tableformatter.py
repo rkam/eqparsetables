@@ -47,8 +47,8 @@ def format_tty_table(table: parsedb.CastTable):
 
     ts = TableStrings()
     ts.title = table.class_name
-    ts.table_start = '\n'
-    ts.table_stop = '\n'
+    ts.table_start = ' '
+    ts.table_stop = ' '
     ts.headers = [row.format('', ''.join('{:15}'.format(x) for x in table.get_players()))]
     ts.headers.append(row.format('Total', ''.join(['{:15}'.format(str(x)) for x in table.get_totals()])))
     spells = table.get_spells()
