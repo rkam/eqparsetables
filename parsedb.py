@@ -59,6 +59,13 @@ class ParseDB:
                                  'VALUES (?, ?, ?)',
                                  (player[0], spell, player[1][spell]))
 
+    def update_cast_parse(self, dod):
+        for player in dod.items():
+            for spell in player[1]:
+                self.cur.execute('INSERT OR REPLACE INTO casts (player, spell, count) '
+                                 'VALUES (?, ?, ?)',
+                                 (player[0], spell, player[1][spell]))
+
     def create_dps_table(self):
         self.cur.execute('CREATE TABLE deeps ('
                          '  player TEXT NOT NULL, '

@@ -23,12 +23,14 @@ def main(argv):
     config_path = cwd + '/config.ini'
     blacklist_path = cwd + '/blacklist.ini'
     input_path = cwd + '/parse.txt'
+    extra_input = ''
     dps_first = 1
     dps_last = sys.maxsize
     padding = '\n\n'
 
     parser = argparse.ArgumentParser(description='Transform GamParse output into you favorite forum table format.')
     parser.add_argument('-p', '--parsefile', help='path to GamParse output', metavar='PATH')
+    parser.add_argument('-s', '--secondparse', help='path to an additional GamParse output file', metavar='PATH')
     parser.add_argument('-b', '--blacklist', help='path to blacklist', metavar='PATH')
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
@@ -40,6 +42,8 @@ def main(argv):
 
     if args.parsefile:
         input_path = args.parsefile
+    if args.secondparse:
+        extra_input = args.secondparse
     if args.blacklist:
         blacklist_path = args.blacklist
     if args.config:
@@ -63,6 +67,9 @@ def main(argv):
     else:
         reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.config, caster_dod=reader.caster_dod)
+        if extra_input:
+            extra_reader = gpc.GPCastReader(extra_input, config_path, blacklist_path)
+            pdb.update_cast_parse(extra_reader.caster_dod)
         if args.tty:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
