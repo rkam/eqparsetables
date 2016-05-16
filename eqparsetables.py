@@ -49,12 +49,17 @@ def main(argv):
                 dps_first = 1
         if args.dpslast:
             dps_last = int(args.dpslast)
+            if dps_last < dps_first:
+                dps_last = dps_first
 
     if args.dps:
         if args.paths:
             reader = gpc.GPDPSReader(args.paths[0], config_path)
         else:
             reader = gpc.GPDPSReader(default_path, config_path)
+        if len(args.paths) > 1:
+            print('Combining DPS parses is not currently supported. Ignoring input files {0}...'
+                  .format(', '.join(args.paths[1:])))
         pdb = parsedb.ParseDB(reader.config, dps_reader=reader)
         dtab = pdb.get_dps_table(first=dps_first, last=dps_last)
         if args.tty:
