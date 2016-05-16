@@ -22,15 +22,13 @@ def main(argv):
     cwd = os.getcwd()
     config_path = cwd + '/config.ini'
     blacklist_path = cwd + '/blacklist.ini'
-    input_path = cwd + '/parse.txt'
-    extra_input = ''
+    default_path = cwd + '/parse.txt'
     dps_first = 1
     dps_last = sys.maxsize
     padding = '\n\n'
 
     parser = argparse.ArgumentParser(description='Transform GamParse output into you favorite forum table format.')
-    parser.add_argument('-p', '--parsefile', help='path to GamParse output', metavar='PATH')
-    parser.add_argument('-s', '--secondparse', help='path to an additional GamParse output file', metavar='PATH')
+    parser.add_argument('paths', help='a list of paths containing GamParse output', nargs='*', metavar='PATHS')
     parser.add_argument('-b', '--blacklist', help='path to blacklist', metavar='PATH')
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
@@ -40,10 +38,6 @@ def main(argv):
 
     args = parser.parse_args()
 
-    if args.parsefile:
-        input_path = args.parsefile
-    if args.secondparse:
-        extra_input = args.secondparse
     if args.blacklist:
         blacklist_path = args.blacklist
     if args.config:
@@ -57,7 +51,10 @@ def main(argv):
             dps_last = int(args.dpslast)
 
     if args.dps:
-        reader = gpc.GPDPSReader(input_path, config_path)
+        if args.paths:
+            reader = gpc.GPDPSReader(args.paths[0], config_path)
+        else:
+            reader = gpc.GPDPSReader(default_path, config_path)
         pdb = parsedb.ParseDB(reader.config, dps_reader=reader)
         dtab = pdb.get_dps_table(first=dps_first, last=dps_last)
         if args.tty:
@@ -65,11 +62,15 @@ def main(argv):
         else:
             tf.print_table(tf.format_enjin_table(dtab))
     else:
-        reader = gpc.GPCastReader(input_path, config_path, blacklist_path)
+        if args.paths:
+            reader = gpc.GPCastReader(args.paths[0], config_path, blacklist_path)
+        else:
+            reader = gpc.GPCastReader(default_path, config_path, blacklist_path)
         pdb = parsedb.ParseDB(reader.config, caster_dod=reader.caster_dod)
-        if extra_input:
-            extra_reader = gpc.GPCastReader(extra_input, config_path, blacklist_path)
-            pdb.update_cast_parse(extra_reader.caster_dod)
+        if len(args.paths) > 1:
+            for path in args.paths[1:]:
+                reader = gpc.GPCastReader(path, config_path, blacklist_path)
+                pdb.update_cast_parse(reader.caster_dod)
         if args.tty:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
