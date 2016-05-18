@@ -90,6 +90,8 @@ def main(argv):
                 ptab = pdb.get_cast_table(eq_class)
                 if eq_class == 'CLR':
                     cg.graph_clerics(ptab)
+                elif eq_class == 'DRU':
+                    cg.graph_druids(ptab)
                 tf.print_table(tf.format_enjin_table(ptab))
 
 

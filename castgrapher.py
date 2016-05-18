@@ -43,3 +43,35 @@ def graph_clerics(table: parsedb.ParseTable):
 
     return
 
+
+def graph_druids(table: parsedb.ParseTable):
+    if table.title != 'Druids':
+        print('Druid graphs cannot be generated from the {0} table.'.format(table.title))
+
+    blasts = []
+    utilities = []
+    # heal_alts = []
+    # utility_alts = []
+    # nuke_alts = []
+
+    for row in table.rows:
+        if row[0] in eq.druid_blast_heals:
+            blasts.append(row)
+        elif row[0] in eq.druid_utilities:
+            utilities.append(row)
+
+    blast_chart = pg.StackedBar()
+    blast_chart.title = 'Druid Single-Target Heals'
+    blast_chart.x_labels = table.column_labels[1:]
+    for spell in blasts:
+        blast_chart.add(spell[0], list(map(zero_to_none, spell[1:])))
+    blast_chart.render_to_file(os.getcwd() + '/druid_blasts.svg')
+
+    utility_chart = pg.StackedBar()
+    utility_chart.title = 'Druid Utility Spells'
+    utility_chart.x_labels = table.column_labels[1:]
+    for spell in utilities:
+        utility_chart.add(spell[0], spell[1:])
+    utility_chart.render_to_file(os.getcwd() + '/druid_utilities.svg')
+
+    return
