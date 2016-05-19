@@ -11,67 +11,46 @@ def zero_to_none(x):
         return x
 
 
-def graph_clerics(table: parsedb.ParseTable):
-    if table.title != 'Clerics':
-        print('Cleric graphs cannot be generated from the {0} table.'.format(table.title))
+def graph_heals(table: parsedb.ParseTable):
+    if table.title not in ['Clerics', 'Druids', 'Shamans']:
+        print('Heal graphs cannot be generated from the {0} table.'.format(table.title))
 
-    blasts = []
-    utilities = []
-    # heal_alts = []
-    # utility_alts = []
-    # nuke_alts = []
-
-    for row in table.rows:
-        if row[0] in eq.cleric_blast_heals:
-            blasts.append(row)
-        elif row[0] in eq.cleric_utilities:
-            utilities.append(row)
+    heals = [row for row in table.rows if row[0] in eq.blast_heals]
 
     blast_chart = pg.StackedBar()
-    blast_chart.title = 'Cleric Single-Target Heals'
+    blast_chart.title = table.title + ' Single-Target Heals'
     blast_chart.x_labels = table.column_labels[1:]
-    for spell in blasts:
+    for spell in heals:
         blast_chart.add(spell[0], list(map(zero_to_none, spell[1:])))
-    blast_chart.render_to_file(os.getcwd() + '/cleric_blasts.svg')
-
-    utility_chart = pg.StackedBar()
-    utility_chart.title = 'Cleric Utility Spells'
-    utility_chart.x_labels = table.column_labels[1:]
-    for spell in utilities:
-        utility_chart.add(spell[0], spell[1:])
-    utility_chart.render_to_file(os.getcwd() + '/cleric_utilities.svg')
+    blast_chart.render_to_file(os.getcwd() + '/' + table.title.lower() + '_blasts.svg')
 
     return
 
 
-def graph_druids(table: parsedb.ParseTable):
-    if table.title != 'Druids':
-        print('Druid graphs cannot be generated from the {0} table.'.format(table.title))
+def graph_utilities(table: parsedb.ParseTable):
+    if table.title not in ['Clerics', 'Druids', 'Shamans']:
+        print('Utility graphs cannot be generated from the {0} table.'.format(table.title))
 
-    blasts = []
-    utilities = []
-    # heal_alts = []
-    # utility_alts = []
-    # nuke_alts = []
-
-    for row in table.rows:
-        if row[0] in eq.druid_blast_heals:
-            blasts.append(row)
-        elif row[0] in eq.druid_utilities:
-            utilities.append(row)
-
-    blast_chart = pg.StackedBar()
-    blast_chart.title = 'Druid Single-Target Heals'
-    blast_chart.x_labels = table.column_labels[1:]
-    for spell in blasts:
-        blast_chart.add(spell[0], list(map(zero_to_none, spell[1:])))
-    blast_chart.render_to_file(os.getcwd() + '/druid_blasts.svg')
+    utilities = [row for row in table.rows if row[0] in eq.utilities.keys()]
 
     utility_chart = pg.StackedBar()
-    utility_chart.title = 'Druid Utility Spells'
+    utility_chart.title = table.title + ' Utility Spells'
     utility_chart.x_labels = table.column_labels[1:]
     for spell in utilities:
         utility_chart.add(spell[0], spell[1:])
-    utility_chart.render_to_file(os.getcwd() + '/druid_utilities.svg')
+    utility_chart.render_to_file(os.getcwd() + '/' + table.title.lower() + '_utilities.svg')
 
     return
+
+
+def graph_nukes(table: parsedb.ParseTable):
+    return
+
+
+def generate_class_graphs(table: parsedb.ParseTable):
+    dispatch = {
+        'Clerics': [graph_heals, graph_utilities],
+        'Druids': [graph_heals, graph_utilities, graph_nukes]
+    }
+    for f in dispatch.get(table.title, []):
+        f(table)

@@ -17,7 +17,9 @@ eq_classes = {
     'WIZ': 'Wizards'
 }
 
-cleric_blast_heals = [
+
+blast_heals = [
+    # Clerics
     'Ardent Light',
     'Elysian Intervention',
     'Fervent Renewal',
@@ -27,18 +29,48 @@ cleric_blast_heals = [
     'Mystical Intervention',
     'Spiritual Remedy',
     'Virtuous Intervention',
-    'Undying Life'
-]
+    'Undying Life',
 
-cleric_utilities = [
-    'Blessing of Resurrection',
-    'Divine Indemnification',
-    'Shining Bulwark',
-    'Unified Hand of Nonia',
-    'Unified Surety',
-    'Unity of Nonia',
-    'Ward of Surety'
+    # Druids
+    'Adrenaline Torrent',
+    # 'Convergence of Spirits',
+    'Panavida',
+    # 'Peaceful Convergence of Spirits',
+    'Resurgence',
+
+    # Shamans
 ]
+utilities = {
+    # Clerics
+    'Blessing of Resurrection': 'Rezzes',
+    'Divine Indemnification': 'Buffs',
+    'Shining Bulwark': 'Buffs',
+    'Unified Hand of Nonia': 'HP Buffs',
+    'Unified Hand of Surety': 'HP Buffs',
+    'Unified Surety': 'HP Buffs',
+    'Unity of Nonia': 'HP Buffs',
+    'Ward of Surety': 'Buffs',
+
+    # Druids
+    'Blizzard Breath': 'Debuffs',
+    'Moonbright Frost': 'Debuffs',
+    'Fixated Blessing of Ro': 'Debuffs',
+    'Vortex of Ro': 'Debuffs',
+    'Skin to Seedlings': 'Debuffs',
+    'Season\'s Wrath': 'Debuffs',
+    'Shieldstone Skin': 'HP Buffs',
+    'Talisman of the Faithful': 'Buffs',
+    'Ferocious Growth': 'HP Buffs',
+    'Pellicle of the Reptile': 'Buffs',
+    'Spirit of the Bear': 'HP Buffs',
+    'Firefly Guardian Spirit': 'Buffs',
+
+    # Shamans
+
+    # Common
+    'Resurrection': 'Rezzes'
+
+}
 
 cleric_group_heals = [
     'Syllable of Convalescence',
@@ -72,24 +104,3 @@ cleric_nuke_alts = [
     'Smite the Wicked',
     'Turn Undead'
 ]
-
-druid_blast_heals = [
-    'Resurgence',
-    'Panavida',
-    'Adrenaline Torrent'
-]
-
-druid_utilities = {
-    'Blizzard Breath': 'Debuffs',
-    'Moonbright Frost': 'Debuffs',
-    'Fixated Blessing of Ro': 'Debuffs',
-    'Vortex of Ro': 'Debuffs',
-    'Skin to Seedlings': 'Debuffs',
-    'Season\'s Wrath': 'Debuffs',
-    'Shieldstone Skin': 'HP Buffs',
-    'Talisman of the Faithful': 'Buffs',
-    'Ferocious Growth': 'HP Buffs',
-    'Pellicle of the Reptile': 'Buffs',
-    'Spirit of the Bear': 'HP Buffs',
-    'Firefly Guardian Spirit': 'Buffs'
-}
