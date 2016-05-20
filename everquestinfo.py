@@ -18,41 +18,49 @@ eq_classes = {
 }
 
 
-blast_heals = [
+blast_heals = {
     # Clerics
-    'Ardent Light',
-    'Elysian Intervention',
-    'Fervent Renewal',
-    'Fervid Renewal',
-    'Fraught Renewal',
-    'Graceful Remedy',
-    'Mystical Intervention',
-    'Spiritual Remedy',
-    'Virtuous Intervention',
-    'Undying Life',
+    'Ardent Light': 'ARDENT LIGHT',
+    'Elysian Intervention': 'Interventions',
+    'Fervent Renewal': 'Renewals',
+    'Fervid Renewal': 'Renewals',
+    'Fraught Renewal': 'Renewals',
+    'Graceful Remedy': 'Remedies',
+    'Mystical Intervention': 'Interventions',
+    'Spiritual Remedy': 'Remedies',
+    'Syllable of Convalescence': 'Group Heals',
+    'Virtuous Intervention': 'Interventions',
+    'Undying Life': 'Undying Life',
+    'Word of Convalescence': 'Group Heals',
+    'Word of Greater Reformation': 'Group Heals',
 
     # Druids
-    'Adrenaline Torrent',
+    'Adrenaline Torrent': 'Adrenaline Torrent',
     # 'Convergence of Spirits',
-    'Panavida',
+    'Lunasoothe': 'Group Heals',
+    'Panavida': 'Panavida',
     # 'Peaceful Convergence of Spirits',
-    'Resurgence',
+    'Resurgence': 'Resurgence',
+    'Survival of the Serendipitous': 'Group Heals'
 
     # Shamans
-]
+}
+
+
 utilities = {
     # Clerics
     'Blessing of Resurrection': 'Rezzes',
-    'Divine Indemnification': 'Buffs',
-    'Shining Bulwark': 'Buffs',
+    'Divine Indemnification': 'DI + SB',
+    'Shining Bulwark': 'DI + SB',
     'Unified Hand of Nonia': 'HP Buffs',
     'Unified Hand of Surety': 'HP Buffs',
     'Unified Surety': 'HP Buffs',
     'Unity of Nonia': 'HP Buffs',
-    'Ward of Surety': 'Buffs',
+    'Ward of Surety': 'Ward',
 
     # Druids
     'Blizzard Breath': 'Debuffs',
+    'Call of the Wild': 'Rezzes',
     'Moonbright Frost': 'Debuffs',
     'Fixated Blessing of Ro': 'Debuffs',
     'Vortex of Ro': 'Debuffs',
@@ -68,15 +76,26 @@ utilities = {
     # Shamans
 
     # Common
-    'Resurrection': 'Rezzes'
-
+    'Resurrection': 'Rezzes',
+    'Reviviscence': 'Rezzes'
 }
 
-cleric_group_heals = [
-    'Syllable of Convalescence',
-    'Word of Convalescence',
-    'Word of Greater Reformation'
-]
+
+nukes = {
+    # Druids
+    'Anabatic Roar': 'Roars',
+    'Katabatic Roar': 'Roars',
+    'Storm Strike': 'AA Nukes',
+    'Fire Storm': 'Fire Storm',
+    'Dichotomic Winds': 'Dick-o-Matic',
+    'Frostweave Crystals': 'Frostweave Crystals',
+    'Remote Sunflash': 'Remotes',
+    'Remote Moonflash': 'Remotes',
+    'Summer Sunfire': 'Summer Sunfire',
+    'Sunfire Blessing': 'Sunfire Blessing',
+    'Winter\'s Wildflame': 'Winter\'s Wildflame'
+}
+
 
 cleric_heal_alts = [
     'Beacon of Life',
@@ -89,6 +108,7 @@ cleric_heal_alts = [
     'Second Spire of Divinity'
 ]
 
+
 cleric_utility_alts = [
     'Divine Arbitration',
     'Divine Balance',
@@ -97,6 +117,7 @@ cleric_utility_alts = [
     'Quiet Miracle',
     'Radiant Cure'
 ]
+
 
 cleric_nuke_alts = [
     'Battle Frenzy',
