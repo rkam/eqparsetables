@@ -5,28 +5,19 @@ import parsedb
 import everquestinfo as eq
 
 
+class SpellFilter:
+    def __init__(self, name, spells):
+        self.name = name
+        self.spells = spells
+
+
 def graph_heals(table: parsedb.ParseTable, separate_spells=False):
     if table.title not in ['Clerics', 'Druids', 'Shamans']:
         print('Heal graphs cannot be generated from the {0} table.'.format(table.title))
         return
 
-    blast_chart = pg.StackedBar()
-    blast_chart.title = table.title + ': Heals'
-    blast_chart.x_labels = table.column_labels[1:]
-
-    if separate_spells:
-        heals = (row for row in table.rows if row[0] in eq.blast_heals.keys())
-        for spell in heals:
-            blast_chart.add(spell[0], spell[1:])
-    else:
-        healtypes = {}
-        for row in table.rows:
-            t = eq.blast_heals.get(row[0], '')
-            if t:
-                healtypes[t] = map(op.add, healtypes.get(t, [0] * len(row[1:])), row[1:])
-        for heal in healtypes.keys():
-            blast_chart.add(heal, healtypes[heal])
-    blast_chart.render_to_file(os.getcwd() + '/' + table.title.lower() + '_heals.svg')
+    heal_filter = SpellFilter('Heals', eq.blast_heals)
+    graph_spells(table, heal_filter, separate_spells)
 
     return
 
@@ -36,51 +27,42 @@ def graph_utilities(table: parsedb.ParseTable, separate_spells=False):
         print('Utility graphs cannot be generated from the {0} table.'.format(table.title))
         return
 
-    utility_chart = pg.StackedBar()
-    utility_chart.title = table.title + ': Utility Spells'
-    utility_chart.x_labels = table.column_labels[1:]
-
-    if separate_spells:
-        utilities = [row for row in table.rows if row[0] in eq.utilities.keys()]
-        for spell in utilities:
-            utility_chart.add(spell[0], spell[1:])
-    else:
-        utiltypes = {}
-        for row in table.rows:
-            t = eq.utilities.get(row[0], '')
-            if t:
-                utiltypes[t] = map(op.add, utiltypes.get(t, [0] * len(row[1:])), row[1:])
-        for util in utiltypes.keys():
-            utility_chart.add(util, utiltypes[util])
-
-    utility_chart.render_to_file(os.getcwd() + '/' + table.title.lower() + '_utilities.svg')
+    utility_filter = SpellFilter('Utility Spells', eq.utilities)
+    graph_spells(table, utility_filter, separate_spells)
 
     return
 
 
 def graph_nukes(table: parsedb.ParseTable, separate_spells=True):
-    if table.title not in ['Clerics', 'Druids', 'Shamans']:
+    if table.title not in ['Druids']:
         print('Nuke graphs cannot be generated from the {0} table.'.format(table.title))
         return
 
-    nuke_chart = pg.StackedBar()
-    nuke_chart.title = table.title + ': Nuke Spells'
-    nuke_chart.x_labels = table.column_labels[1:]
+    nuke_filter = SpellFilter('Nukes', eq.nukes)
+    graph_spells(table, nuke_filter, separate_spells)
+
+    return
+
+
+def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False):
+    chart = pg.StackedBar()
+    chart.title = '{0}: {1}'.format(table.title, spell_filter.name)
+    chart.x_labels = table.column_labels[1:]
 
     if separate_spells:
-        utilities = [row for row in table.rows if row[0] in eq.nukes.keys()]
-        for spell in utilities:
-            nuke_chart.add(spell[0], spell[1:])
+        spells = [row for row in table.rows if row[0] in spell_filter.spells.keys()]
+        for spell in spells:
+            chart.add(spell[0], spell[1:])
     else:
-        nukes = {}
+        spell_types = {}
         for row in table.rows:
-            t = eq.nukes.get(row[0], '')
+            t = spell_filter.spells.get(row[0], '')
             if t:
-                nukes[t] = map(op.add, nukes.get(t, [0] * len(row[1:])), row[1:])
-        for nuke in nukes.keys():
-            nuke_chart.add(nuke, nukes[nuke])
+                spell_types[t] = map(op.add, spell_types.get(t, [0] * len(row[1:])), row[1:])
+        for spell_type in spell_types.keys():
+            chart.add(spell_type, spell_types[spell_type])
 
-    nuke_chart.render_to_file(os.getcwd() + '/' + table.title.lower() + '_nukes.svg')
+    chart.render_to_file('{0}/{1}_{2}.svg'.format(os.getcwd(), table.title.lower(), spell_filter.name.lower()))
 
     return
 
@@ -88,7 +70,8 @@ def graph_nukes(table: parsedb.ParseTable, separate_spells=True):
 def generate_class_graphs(table: parsedb.ParseTable):
     dispatch = {
         'Clerics': [graph_heals, graph_utilities],
-        'Druids': [graph_heals, graph_utilities, graph_nukes]
+        'Druids': [graph_heals, graph_utilities, graph_nukes],
+        'Shamans': [graph_heals, graph_utilities]
     }
     for f in dispatch.get(table.title, []):
         f(table)

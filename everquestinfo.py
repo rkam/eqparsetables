@@ -41,9 +41,27 @@ blast_heals = {
     'Panavida': 'Panavida',
     # 'Peaceful Convergence of Spirits',
     'Resurgence': 'Resurgence',
-    'Survival of the Serendipitous': 'Group Heals'
+    'Survival of the Serendipitous': 'Group Heals',
 
     # Shamans
+    'Ancestral Aid': 'AA + Clicks', # ADPS and Heals (AA)
+    'Antecessor\'s Intervention': 'Interventions',
+    'Blezon\'s Mending': 'Mendings',
+    'Historian\'s Intervention': 'Interventions',
+    'Blezon\'s Recourse': 'Recourses',
+    'Krasir\'s Recourse': 'Recourses',
+    'Reckless Remedy': 'Recklesses',
+    'Reckless Restoration': 'Recklesses',
+    'Reckless Regeneration': 'Recklesses',
+    'Rejuvenation of the Ancestors': 'AA + Clicks',
+    'Krasir\'s Mending': 'Mendings',
+    'Spiritual Swell': 'Spirituals',
+    'Spiritual Surge': 'Spirituals',
+    'Wisp of Renewal': 'Renewals',
+    'Shear of Renewal': 'Renewals',
+    'Union of Spirits': "AA + Clicks",
+    'Frost Gift': 'Twincast',
+    'Glacial Gift': 'Twincast'
 }
 
 
@@ -60,7 +78,6 @@ utilities = {
 
     # Druids
     'Blizzard Breath': 'Debuffs',
-    'Call of the Wild': 'Rezzes',
     'Moonbright Frost': 'Debuffs',
     'Fixated Blessing of Ro': 'Debuffs',
     'Vortex of Ro': 'Debuffs',
@@ -74,8 +91,35 @@ utilities = {
     'Firefly Guardian Spirit': 'Buffs',
 
     # Shamans
+    'Ancestral Aid': 'ADPS',
+    'Prophet\'s Gift of the Ruchu': 'ADPS',
+    # 'Roar of the Lion': 'Roar',
+    'Third Spire of Ancestors': 'ADPS',
+    'Crippling Counterbias': 'Slows',
+    'Regenerating Counterbias': 'Slows',
+    'Curse of Insects': 'Slows',
+    'Sraskus\' Drowse': 'Slows',
+    'Turgur\'s Swarm': 'Slows',
+    'Turgur\'s Insects': 'Slows',
+    'Crippling Apparition': 'Debuffs',
+    'Crippling Spirit': 'Debuffs',
+    'Wind of Malosinete': 'Debuffs',
+    'Wind of Malisene': 'Debuffs',
+    'Malosinete': 'Debuffs',
+    'Malosenete': 'Debuffs',
+    'Issuance of Malos': 'Debuffs',
+    'Blood of Rivans': 'Cures',
+    'Chant of Kromtus': 'Cures',
+    'Eradicate Curse': 'Cures',
+    'Eradicate Disease': 'Cures',
+    'Eradicate Poison': 'Cures',
+    'Cure Corruption': 'Cures',
+    'Radiant Cure': 'Cures',
+    'Pure Sprit': 'Cures',
+    'Purified Spirits': 'Cures',
 
     # Common
+    'Call of the Wild': 'Rezzes',
     'Resurrection': 'Rezzes',
     'Reviviscence': 'Rezzes'
 }
