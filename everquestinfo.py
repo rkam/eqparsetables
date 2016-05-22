@@ -18,7 +18,7 @@ eq_classes = {
 }
 
 
-blast_heals = {
+heals = {
     # Clerics
     'Ardent Light': 'ARDENT LIGHT',
     'Elysian Intervention': 'Interventions',
@@ -30,33 +30,48 @@ blast_heals = {
     'Spiritual Remedy': 'Remedies',
     'Syllable of Convalescence': 'Group Heals',
     'Virtuous Intervention': 'Interventions',
-    'Undying Life': 'Undying Life',
+    'Undying Life': 'Hybrid',
     'Word of Convalescence': 'Group Heals',
     'Word of Greater Reformation': 'Group Heals',
+    'Beacon of Life': 'AA + Clicks',
+    'Burst of Life': 'AA + Clicks',
+    'Celestial Regeneration': 'AA + Clicks',
+    'Divine Arbitration': 'AA + Clicks',
+    'Divine Balance': 'AA + Clicks',
+    'Divine Resurrection': 'Rezzes',
+    'Empyreal Salvation': 'AA + Clicks',
+    'Exquisite Benediction': 'AA + Clicks',
+    'Focused Celestial Regeneration': 'AA + Clicks',
+    'Glorious Judgment': 'Twincast',
+    'Ward of Surety': 'Hybrid',
+    'Wave of Forgiveness': 'AA + Clicks',
+
 
     # Druids
     'Adrenaline Torrent': 'Adrenaline Torrent',
-    # 'Convergence of Spirits',
+    'Blessing of Tunare': 'AA + Clicks',
+    'Convergence of Spirits': 'AA + Clicks',
     'Lunasoothe': 'Group Heals',
     'Panavida': 'Panavida',
-    # 'Peaceful Convergence of Spirits',
+    'Peaceful Convergence of Spirits': 'AA + Clicks',
     'Resurgence': 'Resurgence',
+    'Spirit of the Wood': 'AA + Clicks',
     'Survival of the Serendipitous': 'Group Heals',
 
     # Shamans
-    'Ancestral Aid': 'AA + Clicks', # ADPS and Heals (AA)
+    'Ancestral Aid': 'AA + Clicks',
     'Antecessor\'s Intervention': 'Interventions',
-    'Blezon\'s Mending': 'Mendings',
+    'Blezon\'s Mending': 'Mending',
     'Historian\'s Intervention': 'Interventions',
-    'Blezon\'s Recourse': 'Recourses',
-    'Krasir\'s Recourse': 'Recourses',
-    'Reckless Remedy': 'Recklesses',
-    'Reckless Restoration': 'Recklesses',
-    'Reckless Regeneration': 'Recklesses',
+    'Blezon\'s Recourse': 'Recourse',
+    'Krasir\'s Recourse': 'Recourse',
+    'Reckless Remedy': 'Reckless',
+    'Reckless Restoration': 'Reckless',
+    'Reckless Regeneration': 'Reckless',
     'Rejuvenation of the Ancestors': 'AA + Clicks',
-    'Krasir\'s Mending': 'Mendings',
-    'Spiritual Swell': 'Spirituals',
-    'Spiritual Surge': 'Spirituals',
+    'Krasir\'s Mending': 'Mending',
+    'Spiritual Swell': 'Spiritual',
+    'Spiritual Surge': 'Spiritual',
     'Wisp of Renewal': 'Renewals',
     'Shear of Renewal': 'Renewals',
     'Union of Spirits': "AA + Clicks",
@@ -69,17 +84,20 @@ utilities = {
     # Clerics
     'Blessing of Resurrection': 'Rezzes',
     'Divine Indemnification': 'DI + SB',
+    'Group Purify Soul': 'Cures',
+    'Purify Soul': 'Cures',
     'Shining Bulwark': 'DI + SB',
     'Unified Hand of Nonia': 'HP Buffs',
     'Unified Hand of Surety': 'HP Buffs',
     'Unified Surety': 'HP Buffs',
     'Unity of Nonia': 'HP Buffs',
-    'Ward of Surety': 'Ward',
+    'Ward of Purity': 'Cures',
 
     # Druids
     'Blizzard Breath': 'Debuffs',
     'Moonbright Frost': 'Debuffs',
     'Fixated Blessing of Ro': 'Debuffs',
+    'Nature\'s Boon': 'AA + Clicks',
     'Vortex of Ro': 'Debuffs',
     'Skin to Seedlings': 'Debuffs',
     'Season\'s Wrath': 'Debuffs',
@@ -89,6 +107,7 @@ utilities = {
     'Pellicle of the Reptile': 'Buffs',
     'Spirit of the Bear': 'HP Buffs',
     'Firefly Guardian Spirit': 'Buffs',
+    'Copsetender\'s Breeze': 'Cures',
 
     # Shamans
     'Ancestral Aid': 'ADPS',
@@ -101,6 +120,8 @@ utilities = {
     'Sraskus\' Drowse': 'Slows',
     'Turgur\'s Swarm': 'Slows',
     'Turgur\'s Insects': 'Slows',
+    'Tigir\'s Swarm': 'Slows',
+    'Tigir\'s Insects': 'Slows',
     'Crippling Apparition': 'Debuffs',
     'Crippling Spirit': 'Debuffs',
     'Wind of Malosinete': 'Debuffs',
@@ -110,18 +131,20 @@ utilities = {
     'Issuance of Malos': 'Debuffs',
     'Blood of Rivans': 'Cures',
     'Chant of Kromtus': 'Cures',
-    'Eradicate Curse': 'Cures',
-    'Eradicate Disease': 'Cures',
-    'Eradicate Poison': 'Cures',
     'Cure Corruption': 'Cures',
-    'Radiant Cure': 'Cures',
     'Pure Sprit': 'Cures',
-    'Purified Spirits': 'Cures',
 
     # Common
     'Call of the Wild': 'Rezzes',
     'Resurrection': 'Rezzes',
-    'Reviviscence': 'Rezzes'
+    'Reviviscence': 'Rezzes',
+
+    'Eradicate Curse': 'Cures',
+    'Eradicate Disease': 'Cures',
+    'Eradicate Poison': 'Cures',
+    'Radiant Cure': 'Cures',
+    'Purified Spirits': 'Cures',
+    'Unblemished Blood': 'Cures',
 }
 
 

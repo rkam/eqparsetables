@@ -16,7 +16,7 @@ def graph_heals(table: parsedb.ParseTable, separate_spells=False):
         print('Heal graphs cannot be generated from the {0} table.'.format(table.title))
         return
 
-    heal_filter = SpellFilter('Heals', eq.blast_heals)
+    heal_filter = SpellFilter('Heals', eq.heals)
     graph_spells(table, heal_filter, separate_spells)
 
     return
@@ -27,7 +27,7 @@ def graph_utilities(table: parsedb.ParseTable, separate_spells=False):
         print('Utility graphs cannot be generated from the {0} table.'.format(table.title))
         return
 
-    utility_filter = SpellFilter('Utility Spells', eq.utilities)
+    utility_filter = SpellFilter('Utility', eq.utilities)
     graph_spells(table, utility_filter, separate_spells)
 
     return
@@ -59,7 +59,7 @@ def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False)
             t = spell_filter.spells.get(row[0], '')
             if t:
                 spell_types[t] = map(op.add, spell_types.get(t, [0] * len(row[1:])), row[1:])
-        for spell_type in spell_types.keys():
+        for spell_type in sorted(spell_types.keys()):
             chart.add(spell_type, spell_types[spell_type])
 
     chart.render_to_file('{0}/{1}_{2}.svg'.format(os.getcwd(), table.title.lower(), spell_filter.name.lower()))
