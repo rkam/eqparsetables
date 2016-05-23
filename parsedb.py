@@ -19,7 +19,9 @@ class ParseTable:
 
 
 class ParseDB:
-    def __init__(self, config, caster_dod={}, dps_reader=None):
+    def __init__(self, config, caster_dod=None, dps_reader=None):
+        if caster_dod is None:
+            caster_dod = {}
         self.config = config
         self.caster_dod = caster_dod
         self.dps_reader = dps_reader
