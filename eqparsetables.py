@@ -88,8 +88,7 @@ def main(argv):
                 if i:
                     print(padding)
                 ptab = pdb.get_cast_table(eq_class)
-                if eq_class == 'CLR':
-                    cg.graph_clerics(ptab)
+                cg.generate_class_graphs(ptab)
                 tf.print_table(tf.format_enjin_table(ptab))
 
 
