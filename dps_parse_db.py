@@ -1,5 +1,6 @@
 import sqlite3
 import everquestinfo as eq
+import eq_classes as eqc
 
 import itertools as it
 import operator as op
@@ -75,7 +76,7 @@ class ParseDB:
                          '  sdps INTEGER(10), '
                          '  dps INTEGER(10), '
                          '  time INTEGER(10), '
-                         '  percentage INTEGER(3)'
+                         '  percentage FLOAT'
                          ',  cls TEXT NOT NULL'
                          ',  gid INTEGER(2)'
                          ',  gcls TEXT NOT NULL'
@@ -84,7 +85,8 @@ class ParseDB:
         if self.dps_reader:
             for pl in self.dps_reader.dpser_dod.items():
                 info = pl[1]
-                classes = str({ e['class'] for e in info['group'] } - { info['class'] })
+                classes = make_group_class_list_string(info)
+
                 self.cur.execute('INSERT INTO deeps '
                                  '(player, damage, sdps, dps, time, percentage, cls, gid, gcls) '
                                  'VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -106,21 +108,53 @@ class ParseDB:
 
     def get_dps_table(self, eq_class=None, first=1, last=sys.maxsize):
         if eq_class:
-            self.cur.execute('SELECT p.name, d.sdps, d.damage, d.percentage, d.cls, d.gid, d.gcls '
+            self.cur.execute('SELECT p.name, d.sdps, d.damage, d.dps, d.percentage, d.cls, d.gid, d.gcls '
                              'FROM (SELECT name FROM players WHERE class=?) p '
                              'JOIN deeps d ON  p.name=d.player '
                              'ORDER BY d.sdps DESC;', (eq_class, ))
         else:
-            self.cur.execute('SELECT player, sdps, damage, percentage, cls, gid, gcls FROM deeps ORDER BY sdps DESC')
+            self.cur.execute('SELECT player, sdps, damage, dps, percentage, cls, gid, gcls FROM deeps ORDER BY sdps DESC')
+
         data = self.cur.fetchall()[first - 1: last]
         stats = self.dps_reader.guild_stats
-        rows = [("Raid", stats['sdps'], stats['total'], stats['pct'],
-            "cls", "gid", "gcls"
-                )] + [x for x in data]
-        columns = ['', 'SDPS', 'Total DMG', 'Percentage',
-                'Class', 'g#', 'Others'
-                ]
+
+        rows = [("Raid", stats['sdps'], stats['total'], stats['dps'], stats['pct'],
+                                                    "cls", "gid", "gcls"
+               )] + [x for x in data]
+        cols = ['', 'SDPS', 'DMG', 'DPS', '', 'cls', 'g#', 'Others' ]
+
         title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
-        pp.pprint(columns)                                                          ## DEBUG
-        pp.pprint(rows)                                                             ## DEBUG
-        return ParseTable(title, columns, rows)
+
+        return ParseTable(title, cols, rows)
+
+how = 3
+def make_group_class_list_string(info):
+    if how == 0:
+        cls_list = { e['class'] for e in info['group'] } - { info['class'] }
+        classes = ", ".join(sorted(cls_list))
+    elif how == 1 or how == 2:
+        cls_list = { e['class'] for e in info['group'] }
+        classes = ", ".join(sorted(cls_list))
+        if how == 1:
+            classes = classes.replace(info['class'] + "," , "    ")
+        else:
+            classes = classes.replace(info['class'], info['class'].lower())
+    else:
+        cls_list = { e['class'] for e in info['group'] }
+        diff = eqc.dps - cls_list
+
+        if info['class'] in eqc.dps_melee:
+            classes = ", ".join(sorted(eqc.dps_melee))
+        elif info['class'] in eqc.dps_caster:
+            classes = ", ".join(sorted(eqc.dps_caster))
+        else:
+#            cls_list = { e['class'] for e in info['group'] } - { info['class'] }
+#            classes = ", ".join(sorted(cls_list))
+            classes = ""
+
+        for c in diff:
+            classes = classes.replace(c + "," , " -  ")
+
+        classes = classes.replace(info['class'] + ",", "    ")
+
+    return classes

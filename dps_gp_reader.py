@@ -249,7 +249,7 @@ class GPDPSReader2:
                     if Decimal(ostats['time']) < Decimal(pstats['time']):
                         ostats['time'] = pstats['time']
 
-                    ostats['dps']   = str(int(t / Decimal(ostats['time'])))
+                    ostats['dps']  = str(int(t / Decimal(ostats['time'])))
                     ostats['sdps'] = str(int(t / Decimal(self.guild_stats['time'])))
 
                     p  = t / Decimal(self.guild_stats['total'])

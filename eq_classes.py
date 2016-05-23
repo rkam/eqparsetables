@@ -1,6 +1,28 @@
 """Various information about Everquest Classes"""
 
 """
+List of all classes (short names)
+"""
+all_classes = {
+            "BRD",
+            "BST",
+            "BER",
+            "CLR",
+            "DRU",
+            "ENC",
+            "MAG",
+            "MNK",
+            "NEC",
+            "PAL",
+            "RNG",
+            "ROG",
+            "SHD",
+            "SHA",
+            "WAR",
+            "WIZ",
+            }
+
+"""
 Map long class names in to short names
 """
 map_name = {
@@ -42,12 +64,19 @@ map_hl = {
             "SHA" : "#f3efb1",
             "WAR" : "#f3efb1",
             "WIZ" : "#f3efb1",
-            } 
+            }
 """
 List of DPS classes
 """
-dps     = frozenset([ "BRD", "BST", "BER", "ENC", "MAG",
-                      "MNK", "NEC", "RNG", "ROG", "WIZ" ])
+dps        = frozenset([ "BRD", "BST", "BER", "ENC", "MAG",
+                         "MNK", "NEC", "RNG", "ROG", "WIZ" ])
+
+dps_melee  = frozenset([ "BRD", "BST", "BER",
+                         "MNK",        "RNG", "ROG",       ])
+
+dps_caster = frozenset(dps - dps_melee)
+
+dps_non    = frozenset(all_classes - dps)
 
 """
 List of Healer classes
@@ -65,7 +94,7 @@ There are two types of ADPS: melee_adps, caster_adps (and No ADPS)
 NOTE: this is "usual" ADPS classes that would be in a group
        e.g a BRD can be melee or caster ADPS, but is rarely in caster ADPS role.
 
-TODO: expand to be full support (e.g. bards are melee AND caster dps)
+TODO: expand to be full support (e.g. bards are melee AND caster adps)
 """
 map_adps_type = {
             "BRD" : "melee_adps",
@@ -101,6 +130,28 @@ adps = {
     'caster_adps' : frozenset([ 'ENC' ]),
     'none'        : frozenset()
 }
+
+"""
+Map class to "typical" group type, for purposes of DPS parses
+"""
+dps_group_type = {
+            "Bard"           : "melee",
+            "Beastlord"      : "melee",
+            "Berserker"      : "melee",
+            "Cleric"         : "caster",
+            "Druid"          : "caster",
+            "Enchanter"      : "caster",
+            "Magician"       : "caster",
+            "Monk"           : "melee",
+            "Necromancer"    : "caster",
+            "Paladin"        : "tank",
+            "Ranger"         : "melee",
+            "Rogue"          : "melee",
+            "Shadow Knight"  : "tank",
+            "Shaman"         : "melee",
+            "Warrior"        : "tank",
+            "Wizard"         : "caster",
+            }
 
 """
 Given the full class name (found in parse, guild, raid input files), return
