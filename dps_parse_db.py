@@ -120,7 +120,7 @@ class ParseDB:
         columns = ['', 'SDPS', 'Total DMG', 'Percentage',
                 'Class', 'g#', 'Others'
                 ]
-        title = '{0} in {1} on {2}'.format(*self.dps_reader.get_info())
+        title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
         pp.pprint(columns)                                                          ## DEBUG
         pp.pprint(rows)                                                             ## DEBUG
         return ParseTable(title, columns, rows)

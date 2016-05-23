@@ -107,5 +107,5 @@ class ParseDB:
         stats = self.dps_reader.guild_stats
         rows = [("Raid", stats['sdps'], stats['total'], stats['pct'])] + [x for x in data]
         columns = ['', 'SDPS', 'Total DMG', 'Percentage']
-        title = '{0} in {1} on {2}'.format(*self.dps_reader.get_info())
+        title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
         return ParseTable(title, columns, rows)
