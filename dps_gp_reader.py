@@ -109,7 +109,7 @@ class GPCastReader:
                     player = 'unknown'
         return player
 
-class GPDPSReader2:
+class GPDPSReader:
     def __init__(self, input_path, game_reader):
         self.classes = set()
         self.game_reader = game_reader

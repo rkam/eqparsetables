@@ -24,8 +24,7 @@ def format_table_with_formatter(fm, table):
     if table.is_cast:
         pass                            ## TODO:
     else:
-        labels = list(table.column_labels)
-        ts.headers = fm.format_labels([''] + labels)
+        ts.headers = fm.format_labels([''] + list(table.column_labels))
 
         srow = table.rows[0]
         #              pos    name         sdps                     dmg                      dps                       pct           cls     gid   grp
@@ -59,7 +58,7 @@ class TtyDPSFormatter:
 
     def format_data_rows(self, rows):
         return [TtyDPSFormatter.dpsrow.format(*
-            _make_row(i, tr)
+            _make_dps_row(i, tr)
         ) for i, tr in enumerate(rows)]
 
 
@@ -87,11 +86,11 @@ class EnjinDPSFormatter:
     def format_data_rows(self, rows):
         return [
             '[tr][td]{0}[/td][/tr]'.format(
-                '[/td][td]'.join(_make_row(i, tr))
+                '[/td][td]'.join(_make_dps_row(i, tr))
             ) for i, tr in enumerate(rows)]
 
 
-def _make_row(i, tr):
+def _make_dps_row(i, tr):
     return  [
             str(i + 1),                     # position
         ] + [

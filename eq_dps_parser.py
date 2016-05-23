@@ -96,7 +96,7 @@ def main(argv):
         sys.exit(1)
 
     game_reader = game_readers[game].GameReader(config_files)
-    parse_reader = gpdps.GPDPSReader2(parse_file, game_reader)
+    parse_reader = gpdps.GPDPSReader(parse_file, game_reader)
 
     parse_tab = shims.make_dps_table(parse_reader, first=dps_first, last=dps_last)
 
