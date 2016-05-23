@@ -26,10 +26,11 @@ class GameReader:
               'pets'    : the file associating pets to their owners
             }
         """
-        self.guild  = GuildReader(config_files['guild'])
-        self.raid   = RaidReader(config_files['raid'])
-        self.ignore = self.process_ignore_list(config_files['ignore'])
-        self.pets   = self.process_pet_list(config_files['pet_owners'])
+        self.guild   = GuildReader(config_files['guild'])
+        self.raid    = RaidReader(config_files['raid'])
+        self.ignore  = self.process_ignore_list(config_files['ignore'])
+        self.pets    = self.process_pet_list(config_files['pet_owners'])
+        self.aliases = process_alias_list(config_files['aliases'])
 
     ################## End initializers #################
 
@@ -162,6 +163,21 @@ class GameReader:
         """
         return self.rosters['guild'].members
 
+def process_alias_list(path):
+    """
+    Read config.txt into a dictionary of dictionaries with format cfg[player] = {'class', 'alias'}
+
+    The config file should be in CSV format with the values name, class, alias.
+
+    :param path: path to the config CSV file
+    :return: A dictionary of dictionaries with the format cfg[player_name] = {'class', 'alias'}
+    """
+    with open(path, 'r') as cfg_handle:
+        cfg_reader = csv.DictReader((row for row in cfg_handle if not row.startswith('#')),
+                                    ['name', 'class', 'alias'])
+        return {row['name'].strip(): {'class': row['class'].strip(),
+                                        'alias': row['alias'].strip()} for row in cfg_reader}
+
 class GuildReader:
     """
     A class representing the guild roster pertaining to raids.
@@ -225,7 +241,7 @@ class GuildReader:
                 else:
                     sys.stderr.write('No join date for applicant {0}.\n'.format(name))
                 self.applicants[name] = attr
-            elif attr[ 'title'] not in titles:
+            elif attr[ 'title'] not in GuildReader.titles:
                 self.full_members[name] = attr
 
 class RaidReader:
