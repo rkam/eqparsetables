@@ -6,7 +6,7 @@ import csv
 import re
 import collections
 import datetime
-import eqclasses as eqc
+import eq_classes as eqc
 
 class GameReader:
     """

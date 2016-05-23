@@ -182,14 +182,14 @@ class GPDPSReader2:
         :param line: line of the dps output file to be parsed
         :return: the raid-info-object of the player doing the dps, if applicable, else None
         """
-        m = gp_header.match(line[3:-4])
-        n = name_grabber.match(line)
-        if m:
-            self.mob = m.group('mob')
-            self.time = int(m.group('time'))
-            self.date = m.group('date')
-        elif n:
-            player = n.group('name')
+        hdr = gp_header.match(line[3:-4])
+        dps = name_grabber.match(line)
+        if hdr:
+            self.mob = hdr.group('mob')
+            self.time = int(hdr.group('time'))
+            self.date = hdr.group('date')
+        elif dps:
+            player = dps.group('name')
             if player == 'Total':
                 return { 'name' : player }
 
