@@ -21,6 +21,10 @@ __status__ = 'Prototype'
 game_readers = {}
 game_readers['eq'] = eqgr
 
+output_formatters = {}
+output_formatters['tty'] = shims.TtyDPSFormatter()
+output_formatters['enjin'] = shims.EnjinDPSFormatter()
+
 def main(argv):
     dps_first = 1
     dps_last = sys.maxsize
@@ -96,11 +100,8 @@ def main(argv):
 
     parse_tab = shims.make_dps_table(parse_reader, first=dps_first, last=dps_last)
 
-    if args.tty:
-        fm = shims.TtyDPSFormatter()
-    else:
-        fm = shims.EnjinDPSFormatter()
-
+    dest = "tty" if args.tty else "enjin"     # TODO: specify on cmdline
+    fm = output_formatters[dest]
     shims.print_table_with_formatter(fm, parse_tab)
 
 if __name__ == '__main__':

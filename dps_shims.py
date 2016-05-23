@@ -1,11 +1,6 @@
 import sys
-#import parsedb
 import dps_parse_db as parsedb
 import tableformatter as tf
-
-import pprint
-pp = pprint.PrettyPrinter(indent=4, stream=sys.stderr)
-
 
 def make_dps_table(parse_reader, eq_class=None, first=1, last=sys.maxsize):
     return make_parse_db(parse_reader).get_dps_table(first=first, last=last)
@@ -41,12 +36,12 @@ def format_table_with_formatter(fm, table):
 
     return ts
 
+
 class TtyDPSFormatter:
-    #          pos char_name   sdps   dmg    dps          % char_cls     grp   classes
-    #               Cilenne                                     BRD       10   (6-1)*3 + (6-1-1)*2
-    #                                                                          6 slots x~ "BRD, "
+
+    #            pos   name   sdps    dmg    dps      %         cls      gid    group
     dpsrow = '{0:>2} {1:>20} {2:>7} {3:>7} {4:>7}   {5:<5}%   {6:<3}   {7:>2}  {8:<19}'
-    row_sep = ' '
+    # group: 6 classes/group  -> ("BRD, ..., ROG")  ==> 6*3 + (6-1)*2
 
     def format_title(self, title):
         return title
@@ -63,102 +58,56 @@ class TtyDPSFormatter:
         return TtyDPSFormatter.dpsrow.format(*dps_summary)
 
     def format_data_rows(self, rows):
-#        for i, tr in enumerate(rows):
-#            y = [
-#                    str(i + 1),                     # position
-#                ] + [
-#                    str(tr[0]),                     # name
-#                ] + [
-#                    tf.humanize(str(tr[1])),        # sdps
-#                ] + [
-#                    tf.humanize(str(tr[2])),        # dmg
-#                ] + [
-#                    tf.humanize(str(tr[3])),        # dps
-#                ] + [
-#                    str(tr[4])                      # %
-#                ] + [
-#                    tr[5]                           # char class
-#                ] + [
-#                    str(tr[6])                      # group #
-#                ] + [
-#                    tr[7]                           # group member classes
-#                ]
-#            pp.pprint(y)
-#            x = TtyDPSFormatter.dpsrow.format(*y)
-#            pp.pprint(x)
-
-        return [
-            TtyDPSFormatter.dpsrow.format(*
-                [
-                    str(i + 1),                     # position
-                ] + [
-                    str(tr[0]),                     # name
-                ] + [
-                    tf.humanize(str(tr[1])),        # sdps
-                ] + [
-                    tf.humanize(str(tr[2])),        # dmg
-                ] + [
-                    tf.humanize(str(tr[3])),        # dps
-                ] + [
-                    str(tr[4])                      # %
-                ] + [
-                    tr[5]                           # char class
-                ] + [
-                    str(tr[6])                      # group #
-                ] + [
-                    tr[7]                           # group member classes
-                ]
-            ) for i, tr in enumerate(rows)
-        ]
+        return [TtyDPSFormatter.dpsrow.format(*
+            _make_row(i, tr)
+        ) for i, tr in enumerate(rows)]
 
 
 class EnjinDPSFormatter:
-    dpsrow = '[tr][td]{0}[/td][/tr]'
-    row_sep = '[/td][td]'
-
-    header = '[tr][td][b]{0}[/b][/td][/tr]'
-    header_sep = '[/b][/td][td][b]'
-
-    title = '[size=5][b]{0}[/b][/size]'
-
-    def _format_enjin_header(self, *args):
-        return EnjinDPSFormatter.header.format(EnjinDPSFormatter.header_sep.join(args))
 
     def format_title(self, title):
-        return EnjinDPSFormatter.title.format(title)
+        return '[size=5][b]{0}[/b][/size]'.format(title)
 
     def table_start(self):
         return '[table]'
     def table_stop(self):
         return '[/table]'
 
+    def _format_header(self, *args):
+        return '[tr][td][b]{0}[/b][/td][/tr]'.format(
+                    '[/b][/td][td][b]'.join(args)
+                )
+
     def format_labels(self, labels):
-        return [self._format_enjin_header(*(labels))]
+        return [self._format_header(*(labels))]
 
     def format_summary_row(self, dps_summary):
-        return self._format_enjin_header(*dps_summary)
+        return self._format_header(*dps_summary)
 
     def format_data_rows(self, rows):
-        return [EnjinDPSFormatter.dpsrow.format(
-            EnjinDPSFormatter.row_sep.join(
-                [
-                    str(i + 1),                     # position
-                ] + [
-                    str(tr[0]),                     # name
-                ] + [
-                    tf.humanize(str(tr[1])),        # sdps
-                ] + [
-                    tf.humanize(str(tr[2])),        # dmg
-                ] + [
-                    tf.humanize(str(tr[3])),        # dps
-                ] + [
-                    str(tr[4])                      # %
-                ] + [
-                    tr[5]                           # char class
-                ] + [
-                    str(tr[6])                      # group #
-                ] + [
-                    tr[7]                           # group member classes
-                ]
-            )
-        ) for i, tr in enumerate(rows)]
+        return [
+            '[tr][td]{0}[/td][/tr]'.format(
+                '[/td][td]'.join(_make_row(i, tr))
+            ) for i, tr in enumerate(rows)]
+
+
+def _make_row(i, tr):
+    return  [
+            str(i + 1),                     # position
+        ] + [
+            str(tr[0]),                     # name
+        ] + [
+            tf.humanize(str(tr[1])),        # sdps
+        ] + [
+            tf.humanize(str(tr[2])),        # dmg
+        ] + [
+            tf.humanize(str(tr[3])),        # dps
+        ] + [
+            str(tr[4])                      # %
+        ] + [
+            tr[5]                           # char class
+        ] + [
+            str(tr[6])                      # group #
+        ] + [
+            tr[7]                           # group member classes
+    ]
