@@ -33,7 +33,7 @@ def graph_utilities(table: parsedb.ParseTable, separate_spells=False):
     return
 
 
-def graph_nukes(table: parsedb.ParseTable, separate_spells=True):
+def graph_nukes(table: parsedb.ParseTable, separate_spells=False):
     if table.title not in ['Druids']:
         print('Nuke graphs cannot be generated from the {0} table.'.format(table.title))
         return
@@ -62,7 +62,7 @@ def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False)
         for spell_type in sorted(spell_types.keys()):
             chart.add(spell_type, spell_types[spell_type])
 
-    chart.render_to_file('{0}/{1}_{2}.svg'.format(os.getcwd(), table.title.lower(), spell_filter.name.lower()))
+    chart.render_to_png('{0}/{1}_{2}.png'.format(os.getcwd(), table.title.lower(), spell_filter.name.lower()))
 
     return
 
