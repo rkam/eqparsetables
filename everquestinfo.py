@@ -17,46 +17,49 @@ eq_classes = {
     'WIZ': 'Wizards'
 }
 
-
 heals = {
     # Clerics
-    'Ardent Light': 'ARDENT LIGHT',
-    'Elysian Intervention': 'Interventions',
-    'Fervent Renewal': 'Renewals',
-    'Fervid Renewal': 'Renewals',
-    'Fraught Renewal': 'Renewals',
-    'Graceful Remedy': 'Remedies',
-    'Mystical Intervention': 'Interventions',
-    'Spiritual Remedy': 'Remedies',
-    'Syllable of Convalescence': 'Group Heals',
-    'Virtuous Intervention': 'Interventions',
-    'Undying Life': 'Hybrid',
-    'Word of Convalescence': 'Group Heals',
-    'Word of Greater Reformation': 'Group Heals',
     'Beacon of Life': 'AA + Clicks',
     'Burst of Life': 'AA + Clicks',
     'Celestial Regeneration': 'AA + Clicks',
     'Divine Arbitration': 'AA + Clicks',
     'Divine Balance': 'AA + Clicks',
-    'Divine Resurrection': 'Rezzes',
     'Empyreal Salvation': 'AA + Clicks',
     'Exquisite Benediction': 'AA + Clicks',
     'Focused Celestial Regeneration': 'AA + Clicks',
-    'Glorious Judgment': 'Twincast',
-    'Ward of Surety': 'Hybrid',
     'Wave of Forgiveness': 'AA + Clicks',
-
+    'Ardent Light': 'ARDENT LIGHT',
+    'Ardent Contravention': 'Contraventions',
+    'Elysian Contravention': 'Contraventions',
+    'Virtuous Contravention': 'Contraventions',
+    'Syllable of Convalescence': 'Group Heals',
+    'Word of Convalescence': 'Group Heals',
+    'Word of Greater Reformation': 'Group Heals',
+    'Undying Life': 'Hybrid',
+    'Ward of Surety': 'Hybrid',
+    'Elysian Intervention': 'Interventions',
+    'Mystical Intervention': 'Interventions',
+    'Virtuous Intervention': 'Interventions',
+    'Graceful Remedy': 'Remedies',
+    'Spiritual Remedy': 'Remedies',
+    'Fervent Renewal': 'Renewals',
+    'Fervid Renewal': 'Renewals',
+    'Fraught Renewal': 'Renewals',
+    'Glorious Judgment': 'Twincast',
 
     # Druids
-    'Adrenaline Torrent': 'Adrenaline Torrent',
     'Blessing of Tunare': 'AA + Clicks',
     'Convergence of Spirits': 'AA + Clicks',
-    'Lunasoothe': 'Group Heals',
-    'Panavida': 'Panavida',
     'Peaceful Convergence of Spirits': 'AA + Clicks',
-    'Resurgence': 'Resurgence',
     'Spirit of the Wood': 'AA + Clicks',
+    'Lunasoothe': 'Group Heals',
     'Survival of the Serendipitous': 'Group Heals',
+    'Panavida': 'Panavida',
+    'Remote Sunflash': 'Remotes',
+    'Remote Moonflash': 'Remotes',
+    'Resurgence': 'Resurgence',
+    'Adrenaline Torrent': 'Torrent',
+    'Sunfire Blessing': 'Twincast',
 
     # Shamans
     'Ancestral Aid': 'AA + Clicks',
@@ -80,10 +83,12 @@ heals = {
 }
 
 
+
 utilities = {
     # Clerics
     'Blessing of Resurrection': 'Rezzes',
     'Divine Indemnification': 'DI + SB',
+    'Divine Resurrection': 'Rezzes',
     'Group Purify Soul': 'Cures',
     'Purify Soul': 'Cures',
     'Shining Bulwark': 'DI + SB',
@@ -150,17 +155,17 @@ utilities = {
 
 nukes = {
     # Druids
-    'Anabatic Roar': 'Roars',
-    'Katabatic Roar': 'Roars',
     'Storm Strike': 'AA Nukes',
-    'Fire Storm': 'Fire Storm',
+    'Fire Storm': 'AA Nukes',
+    'Sunfire Blessing': 'Blessings',
     'Dichotomic Winds': 'Dick-o-Matic',
-    'Frostweave Crystals': 'Frostweave Crystals',
     'Remote Sunflash': 'Remotes',
     'Remote Moonflash': 'Remotes',
-    'Summer Sunfire': 'Summer Sunfire',
-    'Sunfire Blessing': 'Sunfire Blessing',
-    'Winter\'s Wildflame': 'Winter\'s Wildflame'
+    'Anabatic Roar': 'Roars',
+    'Katabatic Roar': 'Roars',
+    'Frostweave Crystals': 'Vanilla',
+    'Summer Sunfire': 'Vanilla',
+    'Winter\'s Wildflame': 'Vanilla'
 }
 
 
