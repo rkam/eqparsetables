@@ -45,9 +45,16 @@ def graph_nukes(table: parsedb.ParseTable, separate_spells=False):
 
 
 def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False):
-    chart = pg.StackedBar()
+    # st = pg.style.Style(font_family="DeJa Vu Sans")
+    st = pg.style.DefaultStyle
+    st.font_family = "DeJa Vu Sans"
+    st.colors = ['rgb(12,55,149)', 'rgb(117,38,65)', 'rgb(228,127,0)', 'rgb(159,170,0)', 'rgb(149,12,12)', '#899ca1',
+                 '#f8f8f2', '#bf4646', '#516083']
+    # print(st.colors)
+    chart = pg.StackedBar(style=st)
     chart.title = '{0}: {1}'.format(table.title, spell_filter.name)
     chart.x_labels = table.column_labels[1:]
+    chart.value_formatter = lambda x: '{0:d}'.format(int(x))
 
     if separate_spells:
         spells = [row for row in table.rows if row[0] in spell_filter.spells.keys()]
