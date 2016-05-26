@@ -1,5 +1,7 @@
 .idea/*
 __pycache__/*
+*.pyc
+venv/
 
 # Config and input / output files
 blacklist.*
@@ -8,3 +10,4 @@ parse.*
 out
 *.txt
 *.svg
+
