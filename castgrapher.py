@@ -46,12 +46,15 @@ def graph_nukes(table: parsedb.ParseTable, separate_spells=False):
 
 def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False):
     # st = pg.style.Style(font_family="DeJa Vu Sans")
-    st = pg.style.DefaultStyle
+    # st = pg.style.DefaultStyle
+    st = pg.style.DarkStyle
     st.font_family = "DeJa Vu Sans"
-    st.colors = ['rgb(12,55,149)', 'rgb(117,38,65)', 'rgb(228,127,0)', 'rgb(159,170,0)', 'rgb(149,12,12)', '#899ca1',
-                 '#f8f8f2', '#bf4646', '#516083']
+    st.value_font_size = 8
+    # st.colors = ['rgb(12,55,149)', 'rgb(117,38,65)', 'rgb(228,127,0)', 'rgb(159,170,0)', 'rgb(149,12,12)', '#899ca1',
+    #              '#f8f8f2', '#bf4646', '#516083']
     # print(st.colors)
-    chart = pg.StackedBar(style=st)
+    chart = pg.StackedBar(style=st, print_values=True, print_zeroes=False)
+    chart.show_minor_y_labels = True
     chart.title = '{0}: {1}'.format(table.title, spell_filter.name)
     chart.x_labels = table.column_labels[1:]
     chart.value_formatter = lambda x: '{0:d}'.format(int(x))
@@ -61,13 +64,13 @@ def graph_spells(table: parsedb.ParseTable, spell_filter, separate_spells=False)
         for spell in spells:
             chart.add(spell[0], spell[1:])
     else:
-        spell_types = {}
+        spell_types = dict()
         for row in table.rows:
             t = spell_filter.spells.get(row[0], '')
             if t:
                 spell_types[t] = map(op.add, spell_types.get(t, [0] * len(row[1:])), row[1:])
         for spell_type in sorted(spell_types.keys()):
-            chart.add(spell_type, spell_types[spell_type])
+            chart.add(spell_type, list(spell_types[spell_type]))
 
     chart.render_to_png('{0}/{1}_{2}.png'.format(os.getcwd(), table.title.lower(), spell_filter.name.lower()))
 
