@@ -121,40 +121,63 @@ class ParseDB:
         rows = [("Raid", stats['sdps'], stats['total'], stats['dps'], stats['pct'],
                                                     "cls", "gid", "gcls"
                )] + [x for x in data]
-        cols = ['', 'SDPS', 'DMG', 'DPS', '', 'cls', 'g#', 'Others' ]
+        cols = ['', 'SDPS', 'DMG', 'DPS', '', 'cls', 'g#', 'Others (ADPS and dps)' ]
 
         title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
 
         return ParseTable(title, cols, rows)
 
-how = 3
+#how = 0    classes in group, except char's class, then sorted
+#how = 1    classes in group sorted, with char's class blank
+#how = 2    classes in group sorted, with char's class lowercase
+#how = 3    melee/caster classes in group sorted, blanking out non-ADPS
+how = 4     # 3 but _, not spaces, drop ','  (enjin doesn't have fixed font)
 def make_group_class_list_string(info):
     if how == 0:
-        cls_list = { e['class'] for e in info['group'] } - { info['class'] }
-        classes = ", ".join(sorted(cls_list))
+        group_classes = { e['class'] for e in info['group'] } - { info['class'] }
+        classes = ", ".join(sorted(group_classes))
     elif how == 1 or how == 2:
-        cls_list = { e['class'] for e in info['group'] }
-        classes = ", ".join(sorted(cls_list))
+        group_classes = { e['class'] for e in info['group'] }
+        classes = ", ".join(sorted(group_classes))
         if how == 1:
             classes = classes.replace(info['class'] + "," , "    ")
         else:
             classes = classes.replace(info['class'], info['class'].lower())
     else:
-        cls_list = { e['class'] for e in info['group'] }
-        diff = eqc.dps - cls_list
+        group_classes = { e['class'] for e in info['group'] }
 
-        if info['class'] in eqc.dps_melee:
-            classes = ", ".join(sorted(eqc.dps_melee))
-        elif info['class'] in eqc.dps_caster:
-            classes = ", ".join(sorted(eqc.dps_caster))
+        possible_dps  = eqc.dps_classes(info['class'])
+        is_dps = len(possible_dps) != 0
+
+        possible_adps = eqc.adps_classes(info['class'])
+        a_dps_in_group = (possible_dps | possible_adps) & group_classes
+        others_in_group = group_classes - a_dps_in_group
+        non_adps_in_group  = group_classes - possible_adps
+
+        sep = ", " if how == 3 else " "
+        if is_dps:
+            classes = sep.join(sorted(a_dps_in_group))
         else:
-#            cls_list = { e['class'] for e in info['group'] } - { info['class'] }
-#            classes = ", ".join(sorted(cls_list))
+#            group_classes = { e['class'] for e in info['group'] } - { info['class'] }
+#            classes = sep.join(sorted(group_classes))
             classes = ""
 
-        for c in diff:
-            classes = classes.replace(c + "," , " -  ")
+        for c in others_in_group:
+            if how == 3:
+                classes = classes.replace(c + "," , " -  ")
+                classes = classes.replace(c, " -  ")
+            else:
+                classes = classes.replace(c, " - ")
 
-        classes = classes.replace(info['class'] + ",", "    ")
+        if how == 3: classes = classes.replace(info['class'] + ",", " .  ")
+        classes = classes.replace(info['class'], " . ")
+
+        for c in non_adps_in_group:
+            classes = classes.replace(c, c.lower())
+
+        if how == 4:
+            classes = classes.replace(" ", "_")
+            classes = classes.replace("-", "_")
+            if how == 3: classes = classes.replace(",", "_")
 
     return classes

@@ -102,7 +102,7 @@ def main(argv):
 
     dest = "tty" if args.tty else "enjin"     # TODO: specify on cmdline
     fm = output_formatters[dest]
-    shims.print_table_with_formatter(fm, parse_tab)
+    shims.print_table_with_formatter(fm, parse_tab, parse_reader.errs)
 
 if __name__ == '__main__':
     main(sys.argv[1:])

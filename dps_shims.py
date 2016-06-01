@@ -2,6 +2,11 @@ import sys
 import dps_parse_db as parsedb
 import tableformatter as tf
 
+_err_explan1a = "Found unassociated pet"
+_err_explan1b = ": This means that GamParse didn't link the pet, so the parser rolled that pet's stats into the owner's stats."
+_err_explan2a = "Unrecognized player blah-blah-blah"
+_err_explan2b = ": This means neither GamParse nor I know whose pet that is, so it's ignored."
+
 def make_dps_table(parse_reader, eq_class=None, first=1, last=sys.maxsize):
     return make_parse_db(parse_reader).get_dps_table(first=first, last=last)
 
@@ -9,9 +14,13 @@ def make_parse_db(parse_reader):
     pdb = parsedb.ParseDB(parse_reader.aliases, dps_reader=parse_reader)
     return pdb
 
-def print_table_with_formatter(fm, dtab):
+def print_table_with_formatter(fm, dtab, errs):
     ts = format_table_with_formatter(fm, dtab)
     tf.print_table(ts)
+
+    if len(errs):
+        ets = format_errs_with_formatter(fm, errs)
+        tf.print_table(ets)
 
 def format_table_with_formatter(fm, table):
     ts = tf.TableStrings()
@@ -32,6 +41,17 @@ def format_table_with_formatter(fm, table):
         ts.headers.append(fm.format_summary_row(dps_summary))
 
         ts.rows = fm.format_data_rows(table.rows[1:])
+
+    return ts
+
+def format_errs_with_formatter(fm, errs):
+    ts = tf.TableStrings()
+
+    ts.table_start = fm.errors_start()
+    ts.table_stop = fm.errors_stop()
+
+    ts.headers = fm.format_errors(errs)
+    ts.rows = fm.format_addendum()
 
     return ts
 
@@ -61,6 +81,19 @@ class TtyDPSFormatter:
             _make_dps_row(i, tr)
         ) for i, tr in enumerate(rows)]
 
+    def errors_start(self):
+        return '\n'
+    def errors_stop(self):
+        return ''
+    def format_errors(self, errs):
+        return errs
+    def format_addendum(self):
+        return [
+            "",
+            _err_explan1a + _err_explan1b,
+            _err_explan2a + _err_explan2b,
+         ]
+
 
 class EnjinDPSFormatter:
 
@@ -89,6 +122,18 @@ class EnjinDPSFormatter:
                 '[/td][td]'.join(_make_dps_row(i, tr))
             ) for i, tr in enumerate(rows)]
 
+    def errors_start(self):
+        return '\n[size=2]'
+    def errors_stop(self):
+        return '[/size]'
+    def format_errors(self, errs):
+        return errs
+    def format_addendum(self):
+        return [
+            "",
+            "[color=#239edd]" + _err_explan1a + "[/color]" + _err_explan1b,
+            "[color=#239edd]" + _err_explan2a + "[/color]" + _err_explan2b,
+         ]
 
 def _make_dps_row(i, tr):
     return  [

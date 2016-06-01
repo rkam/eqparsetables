@@ -117,6 +117,7 @@ class GPDPSReader:
         self.guild_stats = {}
         self.lone_pets = dict()
         self.aliases = self.game_reader.aliases         # For compatibility
+        self.errs = game_reader.errs
 
         self.mob = 'unknown'
         self.time = 0
@@ -195,10 +196,14 @@ class GPDPSReader:
 
             info = self.game_reader.raider_info(player)
             if info is None:
-                sys.stderr.write('Unrecognized player {0}. Did you forget to associate a pet with its owner in GamParse? Otherwise, add <pet,owner> to pet-owners list or add to ignore list?\n'.format(player))
+                err = 'Unrecognized player {0}. Did you forget to associate a pet with its owner in GamParse? Otherwise, add <pet,owner> to pet-owners list or add to ignore list?'.format(player)
+                self.errs.append(err)
+                sys.stderr.write(err + '\n')
                 return None
             if 'pet' in info:
-                sys.stderr.write('Found unassociated pet {0}\n'.format(player))
+                err = 'Found unassociated pet {0}'.format(player)
+                self.errs.append(err)
+                sys.stderr.write(err + '\n')
                 self.lone_pets[player] = info
                 return info
             if 'ignore' in info:
@@ -225,9 +230,13 @@ class GPDPSReader:
 
                 owner = self.game_reader.get_pet_owner(pet)
                 if owner is None:
-                    sys.stderr.write('oops! Internal error: Unrecognized pet {0}.\n'.format(pet))
+                    err = 'oops! Internal error: Unrecognized pet {0}.'.format(pet)
+                    self.errs.append(err)
+                    sys.stderr.write(err + '\n')
                 elif owner not in raiders:
-                    sys.stderr.write('Unrecognized owner {0} for pet {1}. Either pet-owners file is incorrect or raid file is incorrect.\n'.format(pet, owner))
+                    err = 'Unrecognized owner {0} for pet {1}. Either pet-owners file is incorrect or raid file is incorrect.'.format(pet, owner)
+                    self.errs.append(err)
+                    sys.stderr.write(err + '\n')
                 else:
                     ostats = raiders[owner]
                     pstats = self.lone_pets[pet]

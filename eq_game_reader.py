@@ -7,6 +7,8 @@ import re
 import collections
 import datetime
 import eq_classes as eqc
+import pprint
+pp = pprint.PrettyPrinter(indent=4, stream=sys.stderr)
 
 class GameReader:
     """
@@ -31,6 +33,7 @@ class GameReader:
         self.ignore  = self.process_ignore_list(config_files['ignore'])
         self.pets    = self.process_pet_list(config_files['pet_owners'])
         self.aliases = process_alias_list(config_files['aliases'])
+        self.errs = []
 
     ################## End initializers #################
 
@@ -112,6 +115,7 @@ class GameReader:
         g = self.guild.members[raider]
         if raider in self.raid.raiders:
             r = self.raid.raiders[raider]
+            grp = r['gid'] if 'gid' in r else 0
         else:
             # TODO: need to be more lenient on this - basically, it requires
             # TODO:   a raid dump for each event and then based on parse time
@@ -120,16 +124,19 @@ class GameReader:
             # TODO: Still doesn't help the char-changed-group cases.
             # TODO:     - so although it's best to have a raid dump per event,
             # TODO:       need to intelligently handle this
-            sys.stderr.write(raider + ' not found in raid - wrong raid file?\n')
-            r = { 'gid': '0' }
+            err = raider + ' not found in raid - wrong raid file?'
+            self.errs.append(err)
+            sys.stderr.write(err + '\n')
+            grp = '0'
+
 
         cls = eqc.map_class_to_short(g['class'])
         info = {
                     'name':      raider,
                     'class':     cls,
                     'highlight': eqc.highlight_for_class(cls),
-                    'gid':       r['gid'],
-                    'group':     self.raid.groups[r['gid']],
+                    'gid':       grp,
+                    'group':     self.raid.groups[grp],
                }
         if 'joined' in g:
             info['joined'] = g['joined'] 
@@ -239,7 +246,9 @@ class GuildReader:
                 if n:
                     attr['joined'] = datetime.datetime(int(n.group('yr')), int(n.group('mo')), int(n.group('dy')))
                 else:
-                    sys.stderr.write('No join date for applicant {0}.\n'.format(name))
+                    err = 'No join date for applicant {0}.'.format(name)
+                    self.errs.append(err)
+                    sys.stderr.write(err + '\n')
                 self.applicants[name] = attr
             elif attr[ 'title'] not in GuildReader.titles:
                 self.full_members[name] = attr
@@ -255,7 +264,7 @@ class RaidReader:
     """
     def __init__(self, path):
         self.raiders      = dict()           # indexed by name
-        self.groups       = { 0: [] }        # indexed by group number
+        self.groups       = { '0' : [] }     # indexed by group number
 
         # File format changed on 160512
 #        if path =~ /RaidRoster-20160512-/ :

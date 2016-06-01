@@ -68,15 +68,15 @@ map_hl = {
 """
 List of DPS classes
 """
-dps        = frozenset([ "BRD", "BST", "BER", "ENC", "MAG",
+dps_all    = frozenset([ "BRD", "BST", "BER", "ENC", "MAG",
                          "MNK", "NEC", "RNG", "ROG", "WIZ" ])
 
 dps_melee  = frozenset([ "BRD", "BST", "BER",
                          "MNK",        "RNG", "ROG",       ])
 
-dps_caster = frozenset(dps - dps_melee)
+dps_caster = frozenset(dps_all - dps_melee)
 
-dps_non    = frozenset(all_classes - dps)
+dps_non    = frozenset(all_classes - dps_all)
 
 """
 List of Healer classes
@@ -116,6 +116,28 @@ map_adps_type = {
         }
 
 """
+Map class to "typical" group type, for purposes of DPS parses
+"""
+dps_group_type = {
+            "BRD" : "melee",
+            "BST" : "melee",
+            "BER" : "melee",
+            "CLR" : "caster",
+            "DRU" : "caster",
+            "ENC" : "caster",
+            "MAG" : "caster",
+            "MNK" : "melee",
+            "NEC" : "caster",
+            "PAL" : "tank",
+            "RNG" : "melee",
+            "ROG" : "melee",
+            "SHD" : "tank",
+            "SHA" : "melee",
+            "WAR" : "tank",
+            "WIZ" : "caster",
+            }
+
+"""
 For each type of ADPS, return the "normal" ADPS classes expected in the group.
 
 TODO: change this to, instead of being "normal" adps per group, to possible
@@ -131,27 +153,11 @@ adps = {
     'none'        : frozenset()
 }
 
-"""
-Map class to "typical" group type, for purposes of DPS parses
-"""
-dps_group_type = {
-            "Bard"           : "melee",
-            "Beastlord"      : "melee",
-            "Berserker"      : "melee",
-            "Cleric"         : "caster",
-            "Druid"          : "caster",
-            "Enchanter"      : "caster",
-            "Magician"       : "caster",
-            "Monk"           : "melee",
-            "Necromancer"    : "caster",
-            "Paladin"        : "tank",
-            "Ranger"         : "melee",
-            "Rogue"          : "melee",
-            "Shadow Knight"  : "tank",
-            "Shaman"         : "melee",
-            "Warrior"        : "tank",
-            "Wizard"         : "caster",
-            }
+dpsx = {
+    'melee'  : dps_melee,
+    'caster' : dps_caster,
+    'tank'   : frozenset()
+}
 
 """
 Given the full class name (found in parse, guild, raid input files), return
@@ -175,4 +181,9 @@ def highlight_for_class(cls):
 GIven a class, return the adps classes associated with it.
 """
 def adps_classes(cls):    return adps[map_adps_type[cls]]
+
+"""
+GIven a class, return the dps classes associated with it.
+"""
+def dps_classes(cls):    return dpsx[dps_group_type[cls]]
 
