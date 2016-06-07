@@ -167,17 +167,12 @@ def make_group_class_list_string(info):
                 classes = classes.replace(c + "," , " -  ")
                 classes = classes.replace(c, " -  ")
             else:
-                classes = classes.replace(c, " - ")
+                classes = classes.replace(c, "___")
 
         if how == 3: classes = classes.replace(info['class'] + ",", " .  ")
-        classes = classes.replace(info['class'], " . ")
+        classes = classes.replace(info['class'], "_._")
 
         for c in non_adps_in_group:
             classes = classes.replace(c, c.lower())
-
-        if how == 4:
-            classes = classes.replace(" ", "_")
-            classes = classes.replace("-", "_")
-            if how == 3: classes = classes.replace(",", "_")
 
     return classes
