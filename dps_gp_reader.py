@@ -121,12 +121,16 @@ class GPDPSReader:
 
         self.mob = 'unknown'
         self.time = 0
+        self.sdps = 0
         self.date = 'unknown'
 
         self.dpser_dod = self.init_dps()
 
     def get_info(self):
-        return [self.mob, self.time, self.date]
+        return { 'mob':  self.mob,
+                 'dur':  self.time,
+                 'on':   self.date,
+                 'sdps': self.sdps }
 
     def init_dps(self):
         gp_header = re.compile('(?P<mob>(?:Combined: )?(?:[\w`,]+ ?)+) on (?P<date>\d{1,2}/\d{1,2}/\d{2,4}) in (?P<time>\d{1,5})sec')
@@ -138,7 +142,7 @@ class GPDPSReader:
         for line in self.gp_lines:
             if line.upper().startswith('[B]'):
                 dps_stats = self.read_entry_header(gp_header, name_grabber, line)
-                if dps_stats == None or dps_stats['name'] == 'Total':
+                if dps_stats == None:
                     continue
             if line.startswith(gp_bullet):
                 if dps_stats == None:
@@ -157,6 +161,8 @@ class GPDPSReader:
                     if who == 'Total':
                         # Header
                         self.guild_stats = stats
+                        self.sdps = stats['sdps']
+                        continue
                     elif 'pet' in dps_stats:
                         # Un-associated pet
                         stats['pet'] = dps_stats['pet']

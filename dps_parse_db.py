@@ -11,8 +11,8 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4, stream=sys.stderr)
 
 class ParseTable:
-    def __init__(self, title, column_labels, rows, is_cast=False):
-        self.title = title
+    def __init__(self, title_parts, column_labels, rows, is_cast=False):
+        self.title_parts = title_parts
         self.column_labels = column_labels
         self.rows = rows
         self.is_cast = is_cast
@@ -123,9 +123,10 @@ class ParseDB:
                )] + [x for x in data]
         cols = ['', 'SDPS', 'DMG', 'DPS', '', 'cls', 'g#', 'Others (ADPS and dps)' ]
 
-        title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
+        # Grummus - 5,825,933 sdps (5.8m) in 99 seconds on 5/10/2016
+        title_parts = self.dps_reader.get_info()
 
-        return ParseTable(title, cols, rows)
+        return ParseTable(title_parts, cols, rows)
 
 #how = 0    classes in group, except char's class, then sorted
 #how = 1    classes in group sorted, with char's class blank

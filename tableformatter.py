@@ -104,3 +104,23 @@ def humanize(s):
         n /= 1000.0
         mag += 1
     return '{0:.1f}{1}'.format(n, suffix[mag])
+
+def comma_number(s):
+    n = int(s)
+    if n < 1000:
+        return str(n)
+
+    m = int(n % 1000) 
+    if m < 100:
+        r = '0' + str(m)
+    else:
+        r = str(m)
+
+    while n > 1000:
+        n = int(n / 1000)
+        m = int(n % 1000) 
+        if m < 100 and n > 1000:
+            r = '0' + str(m) + "," + r
+        else:
+            r = str(m) + "," + r
+    return r

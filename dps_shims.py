@@ -25,7 +25,7 @@ def print_table_with_formatter(fm, dtab, errs):
 def format_table_with_formatter(fm, table):
     ts = tf.TableStrings()
 
-    ts.title = fm.format_title(table.title)
+    ts.title = fm.format_title(table.title_parts)
 
     ts.table_start = fm.table_start()
     ts.table_stop = fm.table_stop()
@@ -62,8 +62,13 @@ class TtyDPSFormatter:
     dpsrow = '{0:>2} {1:>20} {2:>7} {3:>7} {4:>7}   {5:<5}%   {6:<3}   {7:>2}  {8:<19}'
     # group: 6 classes/group  -> ("BRD, ..., ROG")  ==> 6*3 + (6-1)*2
 
-    def format_title(self, title):
-        return title
+    def format_title(self, title_parts):
+        # Grummus - 5,825,933 sdps in 99 seconds on 5/10/2016
+        sdps_raw = tf.comma_number(str(title_parts['sdps']))
+        return '{0} - {1} sdps in {2} seconds on {3}' \
+            .format(title_parts['mob'], sdps_raw,
+                    title_parts['dur'], title_parts['on']
+            )
 
     def table_start(self):
         return ''
@@ -97,8 +102,15 @@ class TtyDPSFormatter:
 
 class EnjinDPSFormatter:
 
-    def format_title(self, title):
-        return '[size=5][b]{0}[/b][/size]'.format(title)
+    def format_title(self, title_parts):
+        # Grummus - 5,825,933 sdps in 99 seconds on 5/10/2016
+
+        sdps_raw = tf.comma_number(str(title_parts['sdps']))
+        s = '[color=#ddd123]{0} - {1} sdps[/color] in {2} seconds on {3}' \
+            .format(title_parts['mob'], sdps_raw,
+                    title_parts['dur'], title_parts['on']
+            )
+        return '[size=5][b]{0}[/b][/size]'.format(s)
 
     def table_start(self):
         return '[table]'

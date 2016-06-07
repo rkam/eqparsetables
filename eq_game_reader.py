@@ -124,7 +124,7 @@ class GameReader:
             # TODO: Still doesn't help the char-changed-group cases.
             # TODO:     - so although it's best to have a raid dump per event,
             # TODO:       need to intelligently handle this
-            err = raider + ' not found in raid - wrong raid file?'
+            err = '\n#====== ' + raider + ' not found in raid - wrong raid file? =======\n'
             self.errs.append(err)
             sys.stderr.write(err + '\n')
             grp = '0'
@@ -211,6 +211,7 @@ class GuildReader:
 #            mia_members is currently unused (160517) but in future will be used
 #                to limit the size of the list (optimization) based on
 #                when the user last logged on (last_on field)..
+        self.errs = []
 
         # File format changed on 160512
 #        if path =~ /RaidRoster-20160512-/ :
