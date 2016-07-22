@@ -101,7 +101,7 @@ map_adps_type = {
             "BST" : "melee_adps",
             "BER" : "melee_adps",
             "CLR" : 'none',
-            "DRU" : 'none',
+            "DRU" : 'caster_adps',
             "ENC" : "caster_adps",
             "MAG" : "caster_adps",
             "MNK" : "melee_adps",
@@ -118,7 +118,7 @@ map_adps_type = {
 """
 Map class to "typical" group type, for purposes of DPS parses
 """
-dps_group_type = {
+group_type = {
             "BRD" : "melee",
             "BST" : "melee",
             "BER" : "melee",
@@ -146,10 +146,11 @@ TODO: change this to, instead of being "normal" adps per group, to possible
                     are NOT that.  But, if no group has that, but a group
                     has BRD, RNG, SHA, then mark groups that are NOT that.
                also, for casters, ENC vs. ENC + BRD vs. BRD
+TODO: should also be built from the above table.
 """
 adps = {
     'melee_adps'  : frozenset([ 'BRD', 'BST', 'RNG', 'SHA' ]),
-    'caster_adps' : frozenset([ 'ENC' ]),
+    'caster_adps' : frozenset([ 'DRU', 'ENC' ]),
     'none'        : frozenset()
 }
 
@@ -185,5 +186,5 @@ def adps_classes(cls):    return adps[map_adps_type[cls]]
 """
 GIven a class, return the dps classes associated with it.
 """
-def dps_classes(cls):    return dpsx[dps_group_type[cls]]
+def dps_classes(cls):    return dpsx[group_type[cls]]
 

@@ -213,10 +213,6 @@ class GuildReader:
 #                when the user last logged on (last_on field)..
         self.errs = []
 
-        # File format changed on 160512
-#        if path =~ /RaidRoster-20160512-/ :
-#            keys = [ 'name', 'level', 'class', 'title', 'location', 'last_on', 'unknown', 'comment' ] # others ...
-#        else:
         keys = [ 'name', 'level', 'class', 'title', 'location', 'last_on', 'unknown', 'comment' ] # others ...
 
         with open(path, 'r') as fh:
@@ -267,10 +263,6 @@ class RaidReader:
         self.raiders      = dict()           # indexed by name
         self.groups       = { '0' : [] }     # indexed by group number
 
-        # File format changed on 160512
-#        if path =~ /RaidRoster-20160512-/ :
-#            keys = [ 'gid', 'name', 'level', 'class', 'role' ] # others ...
-#        else:
         keys = [ 'gid', 'name', 'level', 'class', 'role' ] # others ...
 
         with open(path, 'r') as fh:
