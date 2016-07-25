@@ -34,6 +34,7 @@ def main(argv):
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
     parser.add_argument('--tty', action='store_true', help='output text (default is enjin post format)')
+    # parser.add_argument('--attn', action='store_true', help='produce attendance list') # Work in progress...
     parser.add_argument('-f', '--dpsfirst', help='highest ranking dpser to show', metavar='FIRST')
     parser.add_argument('-l', '--dpslast', help='lowest ranking dpser to show', metavar='LAST')
 
@@ -83,6 +84,9 @@ def main(argv):
                     print(padding)
                 ptab = pdb.get_cast_table(eq_class)
                 tf.print_table(tf.format_tty_table(ptab))
+        elif args.attn:
+            ptab = pdb.get_attn_table()
+            tf.print_table(tf.format_enjin_table(ptab))
         else:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
