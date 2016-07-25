@@ -10,4 +10,5 @@ parse.*
 out
 *.txt
 *.svg
+*.png
 
