@@ -9,7 +9,7 @@ class GPCastReader:
     """
     def __init__(self, input_path, config_path, blacklist_path):
         """
-        Create a GPCastReader object
+        Create a GPCastReader object.
 
         :param input_path: path to a plain text file containing GamParse output
         :param config_path: path to a CSV file with player / class information
@@ -117,9 +117,15 @@ class GPCastReader:
 
 class GPDPSReader:
     """
-    Read GamParse dps output information and store it for later processing
+    Read GamParse dps output information and store it for later processing.
     """
     def __init__(self, input_path, config_path):
+        """
+        Construct a GPDPSReader object.
+
+        :param input_path: path to a plain text file containing GamParse output
+        :param config_path: path to a CSV file with player / class information
+        """
         self.classes = set()
         self.gp_lines = read_raw_parse(input_path)
         self.config = init_config(config_path)
@@ -133,7 +139,7 @@ class GPDPSReader:
 
     def get_info(self):
         """
-        Retrieve a list of dps parse meta-information
+        Retrieve a list of dps parse meta-information.
 
         :return: a list containing mob name, fight time, and fight date
         """
@@ -202,7 +208,7 @@ def read_raw_parse(path):
         """
         Read GamParse's forum output into a list.
 
-        :param path: path to the file containing GamParse output
+        :param path: path to a file containing GamParse output
         :return: a list containing the lines of the input file
         """
         with open(path, 'r') as input_handle:

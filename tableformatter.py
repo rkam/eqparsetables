@@ -2,6 +2,9 @@ import parsedb
 
 
 class TableStrings:
+    """
+    A simple container class for formatted table data and meta-data.
+    """
     def __init__(self):
         self.title = ''
         self.table_start = ''
@@ -11,6 +14,12 @@ class TableStrings:
 
 
 def print_table(table: TableStrings):
+    """
+    Print a formatted table to the console.
+
+    :param table: a TableStrings object
+    :return: void
+    """
     print(table.title)
     if table.table_start:
         print(table.table_start)
@@ -23,6 +32,12 @@ def print_table(table: TableStrings):
 
 
 def format_enjin_table(table: parsedb.ParseTable):
+    """
+    Convert ParseDB data into Enjin table format.
+
+    :param table: a ParseDB table
+    :return: a TableStrings object containing parse data in Enjin format
+    """
     header = '[tr][td][b]{0}[/b][/td][/tr]'
     header_sep = '[/b][/td][td][b]'
 
