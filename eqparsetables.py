@@ -34,7 +34,7 @@ def main(argv):
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
     parser.add_argument('--tty', action='store_true', help='output text (default is enjin post format)')
-    # parser.add_argument('--attn', action='store_true', help='produce attendance list') # Work in progress...
+    parser.add_argument('--attn', action='store_true', help='reconstruct attendance list') # Work in progress...
     parser.add_argument('-f', '--dpsfirst', help='highest ranking dpser to show', metavar='FIRST')
     parser.add_argument('-l', '--dpslast', help='lowest ranking dpser to show', metavar='LAST')
 
