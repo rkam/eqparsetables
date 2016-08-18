@@ -19,6 +19,12 @@ __email__ = 'andrew@under.co.nz'
 __status__ = 'Prototype'
 
 
+def check_file(path):
+    if not os.path.isfile(path):
+        print("Could not find the file {0}. Exiting.".format(path))
+        sys.exit()
+
+
 def main(argv):
     cwd = os.getcwd()
     config_path = cwd + '/config.ini'
@@ -34,16 +40,25 @@ def main(argv):
     parser.add_argument('-c', '--config', help='path to config CSV file', metavar='PATH')
     parser.add_argument('--dps', action='store_true', help='force dps formatting')
     parser.add_argument('--tty', action='store_true', help='output text (default is enjin post format)')
+    parser.add_argument('--attn', action='store_true', help='reconstruct attendance list') # Work in progress...
     parser.add_argument('-f', '--dpsfirst', help='highest ranking dpser to show', metavar='FIRST')
     parser.add_argument('-l', '--dpslast', help='lowest ranking dpser to show', metavar='LAST')
 
     args = parser.parse_args()
 
+    # set input paths
+
     if args.blacklist:
+        check_file(args.blacklist)
         blacklist_path = args.blacklist
+
     if args.config:
+        check_file(args.config)
         config_path = args.config
+
     if args.dps:
+        # set dps placement bounds
+
         if args.dpsfirst:
             dps_first = int(args.dpsfirst)
             if dps_first < 1:
@@ -53,22 +68,32 @@ def main(argv):
             if dps_last < dps_first:
                 dps_last = dps_first
 
-    if args.dps:
-        if args.paths:
-            reader = gpc.GPDPSReader(args.paths[0], config_path)
-        else:
-            reader = gpc.GPDPSReader(default_path, config_path)
+        # read GamParse DPS data into ParseDB
+
         if len(args.paths) > 1:
             print('Combining DPS parses is not currently supported. Ignoring input files {0}...'
                   .format(', '.join(args.paths[1:])))
+
+        if args.paths:
+            check_file(args.paths[0])
+            reader = gpc.GPDPSReader(args.paths[0], config_path)
+        else:
+            reader = gpc.GPDPSReader(default_path, config_path)
         pdb = parsedb.ParseDB(reader.config, dps_reader=reader)
         dtab = pdb.get_dps_table(first=dps_first, last=dps_last)
+
+        # make DPS output
+
         if args.tty:
             tf.print_table(tf.format_tty_table(dtab))
         else:
             tf.print_table(tf.format_enjin_table(dtab))
     else:
+        # read GamParse cast data into ParseDB
+
         if args.paths:
+            for path in args.paths:
+                check_file(path)
             reader = gpc.GPCastReader(args.paths[0], config_path, blacklist_path)
         else:
             reader = gpc.GPCastReader(default_path, config_path, blacklist_path)
@@ -77,12 +102,18 @@ def main(argv):
             for path in args.paths[1:]:
                 reader = gpc.GPCastReader(path, config_path, blacklist_path)
                 pdb.update_cast_parse(reader.caster_dod)
+
+        # make cast output
+
         if args.tty:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:
                     print(padding)
                 ptab = pdb.get_cast_table(eq_class)
                 tf.print_table(tf.format_tty_table(ptab))
+        elif args.attn:  # Work in progress...
+            ptab = pdb.get_attn_table()
+            tf.print_table(tf.format_enjin_table(ptab))
         else:
             for i, eq_class in enumerate(sorted(reader.classes)):
                 if i:

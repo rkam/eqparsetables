@@ -52,8 +52,10 @@ class ParseDB:
         self.cur.execute('CREATE TABLE casts ('
                          '  player TEXT NOT NULL, '
                          '  spell TEXT NOT NULL, '
-                         '  count INTEGER(5) DEFAULT 0'
-                         ')')
+                         '  count INTEGER(5) DEFAULT 0, '
+                         '  UNIQUE(player, spell)'
+                         ')'
+                         )
         for player in self.caster_dod.items():
             for spell in player[1]:
                 self.cur.execute('INSERT INTO casts '
@@ -64,9 +66,16 @@ class ParseDB:
     def update_cast_parse(self, dod):
         for player in dod.items():
             for spell in player[1]:
-                self.cur.execute('INSERT OR REPLACE INTO casts (player, spell, count) '
-                                 'VALUES (?, ?, ?)',
-                                 (player[0], spell, player[1][spell]))
+                self.cur.execute('INSERT OR IGNORE INTO casts (player, spell, count) '
+                                 'VALUES (?, ?, ?) ', (player[0], spell, player[1][spell]))
+                self.cur.execute('SELECT player, spell, count FROM casts WHERE player LIKE ? AND spell LIKE ?', (player[0], spell))
+                data = self.cur.fetchall()
+                old_count = int(data[0][2])
+                if old_count < int(player[1][spell]):
+                    print('Updating cast count record for {0} for spell {1}. Old count: {2}. New count: {3}'
+                          .format(player[0], spell, old_count, player[1][spell]))
+                    self.cur.execute('REPLACE INTO casts (player, spell, count) '
+                                     'VALUES (?, ?, ?)', (player[0], spell, player[1][spell]))
 
     def create_dps_table(self):
         self.cur.execute('CREATE TABLE deeps ('
@@ -111,3 +120,19 @@ class ParseDB:
         columns = ['', 'SDPS', 'Total DMG', 'Percentage']
         title = '{0} in {1} seconds on {2}'.format(*self.dps_reader.get_info())
         return ParseTable(title, columns, rows)
+
+    def get_attn_table(self):
+        self.cur.execute('SELECT player '
+                         'FROM casts '
+                         'JOIN players p ON p.name=player')
+        data = self.cur.fetchall()
+        players = sorted(set(row[0] for row in data))
+        print('[size=5][b]{0}[/b][/size]'.format('EVENT'))
+        print('[table]')
+        print('[tr][td][b]Player[/b][/td][/tr]')
+        for p in players:
+            print('[tr][td]{0}[/td][/tr]'.format(p))
+        print('[/table]')
+        #columns = ['Name']
+        #rows = [p for p in players]
+        #return ParseTable('Event', columns, rows)
